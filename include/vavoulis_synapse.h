@@ -14,6 +14,11 @@
 #include"vavoulis_neuron.h"
 
 
+
+/*! VavoulisSynapse class
+ * Synapse as described in Vavoulis et al. 
+ * Connect two neurons in a gradual synapse.
+ */
 class VavoulisSynapse{
 
 	enum vars_names {s,r,n_variables}; ///< Varibles names references for _variables array

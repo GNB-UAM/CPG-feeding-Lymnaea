@@ -28,3 +28,5 @@ doxygen:
 
 clean:
 	rm -f feeding_cpg *.o 
+	rm -f -r html/* latex/*
+	rmdir html latex

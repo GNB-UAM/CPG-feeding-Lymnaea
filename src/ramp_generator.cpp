@@ -41,8 +41,6 @@ using namespace std;
 		else if((inc_times/max_num_inc)%2 == 1) //Is decreasing 
 			i_ext = max - inc_times_ramp * stim_inc; 
 
-		// cout << _time << " "<< i_ext << endl;
-
 		return i_ext;
 		
 	}

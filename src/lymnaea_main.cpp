@@ -33,31 +33,91 @@ using namespace std;
 
 #define MAX_STRING 20000
 
-// #define NUM_ARG 16
 #define ERROR 0
 #define OK 1
 
-enum prim_types{String,Integer, Float, Double, IntegrationMeth};
-string arg_names[]={"-connection","-file_name","-integrator","-dt","-c_so","-c_n1m","-c_n2v","-c_n3t","-stim_dur","-stim_inc","-MIN_c","-MAX_c","-secs_dur","-rounds","-feed_ini","-feed_end"};
-string format = "Format: ./lymn -connection val -file_name val -integration_method -dt val val -c_so val -c_n1m val -c_n2v val -c_n3t val -stim_dur val -stim_inc val -MIN_c val -MAX_c val [-secs_dur val] -rounds val -feed_ini val -feed_end val\n";
-prim_types arg_types[]={Integer,String,IntegrationMeth,Double,Double,Double,Double,Double,Double,Double,Double,Double,Double,Integer,Double,Double};
+enum prim_types{String,Integer, Float, Double, IntegrationMeth};//<Data types for parsing function
+
+string arg_names[]={"-connection","-file_name","-integrator","-dt","-c_so","-c_n1m","-c_n2v","-c_n3t","-stim_dur","-stim_inc","-MIN_c","-MAX_c","-secs_dur","-rounds","-feed_ini","-feed_end"};//<Arguments possible names
+prim_types arg_types[]={Integer,String,IntegrationMeth,Double,Double,Double,Double,Double,Double,Double,Double,Double,Double,Integer,Double,Double}; //Arguments corresponding types
+
+string format = "Format: ./lymn -connection val -file_name val -integration_method -dt val val -c_so val -c_n1m val -c_n2v val -c_n3t val -stim_dur val -stim_inc val -MIN_c val -MAX_c val [-secs_dur val] -rounds val -feed_ini val -feed_end val\n";//<Input format
 
 
-//TODO: methods in new class?
-string methods[] = {"Euler","Runge-Kutta"}; 
+string methods[] = {"Euler","Runge-Kutta"}; //<Integrator names in String
 string headers[] = {"t SO N1M N2v N3t c", "t N1M N2v","t N1M N2v N3t","t SO N1M N2v N3t c","t SO IsynSO N1M IsynN1M N2v IsynN2v N3t IsynN3t",
-		"t SO N1M N2v N3t", "t SO N1M N2v N3t c"};
+		"t SO N1M N2v N3t", "t SO N1M N2v N3t c"};//<File headers depending on the connection. 
 
 
-enum integrators{EULER,RUNGE,n_integrators};
+enum integrators{EULER,RUNGE,n_integrators}; //<Integration types available
 
+/*!
+* @brief Parse input arguments defined by its types above in arg_names and arg_types. 
+*
+*/
 int parse_input(int argc,char *argv[], void ** arguments);
+/*!
+* Prompt help with parameters description
+*/
 void show_help();
-double update_all(double _time, const vector<VavoulisModel *>& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, integrators integr,double dt,const std::vector<double> & i_ext, RampGenerator * rg);
-double update_euler(double _time, double dt,std::vector<VavoulisModel *> neurons, std::vector<std::vector<VavoulisSynapse* > > syns ,const std::vector<double> &iext,RampGenerator * rg);
-double update_runge(double _time,const std::vector<VavoulisModel * >& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, double dt , const std::vector<double> &iext, RampGenerator * rg);
-double intey(double _time, const std::vector<VavoulisModel *> &neurons,const std::vector<vector<VavoulisSynapse *> >& syns, double inc_integracion, const std::vector<double> & iext, RampGenerator * rg);
+
+/*!
+* 	Detect possible spikes in each neuron and writes it in the associated spike file. When no spike is found ',' is written in the corresponding column.
+* @param f_spks Spikes file stream 
+* @param neurons vector of neurons 
+* @param prevs vector of derivate previous values 
+* @param t time value 
+*/
 void detect_spikes(FILE * f_spks, std::vector<VavoulisModel *> const & neurons, std::vector<double> &prevs, double t );
+
+/*!
+* 	General update function, this function call either update_euler or update_runge
+* @param _time Current time instant
+* @param neurons Vector of neurons 
+* @param syns Vector of synapses vector associated to each neuron
+* @param integr Integration Method
+* @param dt Time step
+* @param i_ext Current value vector (same ids as neurons vector)
+* @param rg RampGenerator object, contains ramp stimulation
+* @return Injected current value of the neuron stimulated (-1)
+*/
+double update_all(double _time, const vector<VavoulisModel *>& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, integrators integr,double dt,const std::vector<double> & i_ext, RampGenerator * rg);
+
+/*!
+* 	@brief Euler update function, updates
+* 	@param see update all parameters description
+*/
+void update_euler(double _time, double dt,std::vector<VavoulisModel *> neurons, std::vector<std::vector<VavoulisSynapse* > > syns ,const std::vector<double> &iext,RampGenerator * rg);
+/*!
+* 	@brief Runge-Kutta update function, updates function using intey and funcion auxiliar function
+* 	@param see update all parameters description
+*/
+void update_runge(double _time,const std::vector<VavoulisModel * >& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, double dt , const std::vector<double> &iext, RampGenerator * rg);
+/*!
+* 	@brief Performs Runge-Kutta integration with middle steps. New variable defined with a "global" vector containing both neurons and synapses.
+* 	Complete array example with N1M-N2v-N3t connection:
+* 		SO neuron variables (no synapses):					 v,va,p,q,h,n
+* 		N1M neuron variables and synapses N1M-N2v;N1M-N3t:	 v,va,p,q,h,n,s,r,s,r
+* 		N2v variables and synapses N2v-N1M:					 v,va,p,q,h,n,s,r
+* 		N3t variables and synapses N3t-N1M;N3t-N2v:			 v,va,p,q,h,n,s,r,s,r
+*
+* 	@param see update all parameters description
+*/
+double intey(double _time, const std::vector<VavoulisModel *> &neurons,const std::vector<vector<VavoulisSynapse *> >& syns, double inc_integracion, const std::vector<double> & iext, RampGenerator * rg);
+/*!
+* 	@brief Intey auxiliar function, obtains general vectors with the result of each differential equation for each neuron variables and its associated synapses.
+*	@param _time Current time instant
+* 	@param v_variables general vector matrix with all variables (neuron+synapses)
+* 	@param v_fvec general return vector matrix with all differential equations value for each variable (neuron+synapses)
+*	@param neurons Vector of neurons 
+*	@param syns Vector of synapses vector associated to each neuron
+*	@param dt Time step
+*	@param i_ext Current value vector (same ids as neurons vector)
+* 	@param rg RampGenerator object, contains ramp stimulation
+* 	@param see update all parameters description
+*/
+void funcion(double _time,const std::vector<std::vector<double > > & v_variables, std::vector<std::vector<double > >  &v_fvec, const std::vector<VavoulisModel *>& neurons,const std::vector<vector<VavoulisSynapse *> >& syns , const std::vector<double> & iext, RampGenerator * rg);
+
 
 
 int main(int argc, char * argv[])
@@ -74,8 +134,7 @@ int main(int argc, char * argv[])
 	double c_so=-1,c_n1m=-1,c_n2v=-1,c_n3t=-1;
 	double stim_dur=-1;
 	double stim_inc=-1,MIN_c=-1,MAX_c=-1;
-	double feed_ini =  -1;
-	double feed_end =  -1;
+	double feed_ini =  -1,feed_end =  -1;
 
 	int rounds=4;
 
@@ -265,8 +324,7 @@ int main(int argc, char * argv[])
 	//   Simulation Mode Parameters
 	////////////////////////////////////////////////////////
 
-	//Variable used to reduce output file dimension. 
-	int serie =0;
+	int serie =0;//Variable used to reduce output file dimension. 
 	double t=0.0;
 	double c = MIN_c;
 
@@ -275,7 +333,7 @@ int main(int argc, char * argv[])
 
 	for (int i=0; i < iters; i++)
 	{
-
+		//Write file each 3 iterations to reduce output file dimension
       serie = (serie + 1) % 4;
       if (serie == 3)
       {
@@ -298,7 +356,7 @@ int main(int argc, char * argv[])
 
 
 		//////////////////////////////////////////////////////////////
-		////////////////// SIMULATING FEEDING ////////////////////////
+		////////////////// SIMULATING SATIATED BEHAVIOUR /////////////
 		//////////////////////////////////////////////////////////////
 
 		if(feed_ini==i)
@@ -310,26 +368,18 @@ int main(int argc, char * argv[])
 		{
 			c_values = c_values_save; //restore current values
 		}
+		///////////////////////////////////////////////////////////
 
-
-
-		// c = current;
-		//10,6,2,0 
-		//			<- con 4.4 en n2v no va
-		//simulating feeding 10 8 2 0 con 15 dentro del bucle
-		//N1-driven 8.5,c,2,0
-		//SO-driven c,10,1,4 <- sin 4 en n3 no varía.
-
-		//SO no curr 0 6 2 0
-
+		//Update all parameters
 		c = update_all(t,neurons,syns,integration,dt,c_values, &rg);
 
+		//Detect spikes and write in spikes file.
   		detect_spikes(f_spks,neurons,prevs,t);
 
 		t += dt;
 
 		if(i==(int)iters/2)
-			cout << i << endl;
+			cout << "Half iterations performed" << endl;
 	}
 
 
@@ -362,25 +412,19 @@ double update_all(double _time, const vector<VavoulisModel *>& neurons,const std
 
 	}
 
-
 	for (int i=0; i< (int) neurons.size(); i++)
 		if(i_ext[i]==-1)
 			return rg->get_ext(i_ext[i],_time);
 
 
 	return i_ext[VavoulisModel::N1M];
-	// update_synapses(integr,dt);
-	// return -1;
 
 }
 
 
-double update_runge(double _time,const std::vector<VavoulisModel * >& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, double dt , const std::vector<double> &iext, RampGenerator * rg)
+void update_runge(double _time,const std::vector<VavoulisModel * >& neurons,const std::vector<vector<VavoulisSynapse * > >& syns, double dt , const std::vector<double> &iext, RampGenerator * rg)
 {
-	// intey(_time, neurons, dt,iext, rg);
 	intey(_time, neurons,syns, dt,iext, rg);
-	// return iext;
-	return 0;
 
 }
 
@@ -389,17 +433,17 @@ double update_runge(double _time,const std::vector<VavoulisModel * >& neurons,co
 void funcion(double _time,const std::vector<std::vector<double > > & v_variables, std::vector<std::vector<double > >  &v_fvec, const std::vector<VavoulisModel *>& neurons,const std::vector<vector<VavoulisSynapse *> >& syns , const std::vector<double> & iext, RampGenerator * rg)
 {	
 
-	int n_vars=VavoulisModel::getNVars();
-	int n_vars_syns=VavoulisSynapse::getNVars();
+	int n_vars=VavoulisModel::getNVars(); //Obtain number of variables in each neuron in the model
+	int n_vars_syns=VavoulisSynapse::getNVars(); //Obtain number of of variables in each synapse in the model
 
-	std::vector<double> ret(n_vars);
-	std::vector<double> ret_syn(n_vars_syns);
+	std::vector<double> ret(n_vars); //Auxiliar return vector for neuron variables
+	std::vector<double> ret_syn(n_vars_syns); //Auxiliar return vector for synapse variables
 
 
-	int pre_index =-1;
-	double vpre=-1;
-	double i_syn=0;
-	double i_ext =0;
+	int pre_index =-1; //Presynaptic neuron type
+	double vpre=-1; //Presynaptic neuron voltage value
+	double i_syn=0; //Synaptic current 
+	double i_ext =0; //Injected current 
 
 	//Iterate through neurons array 
 	for(int i=0; i<(int)neurons.size(); i++)
@@ -583,7 +627,7 @@ double intey(double _time, const std::vector<VavoulisModel *> &neurons,const std
 }
 
 
-double update_euler(double _time, double dt,std::vector<VavoulisModel *> neurons, std::vector<std::vector<VavoulisSynapse* > > syns ,const std::vector<double> &iext,RampGenerator * rg)
+void update_euler(double _time, double dt,std::vector<VavoulisModel *> neurons, std::vector<std::vector<VavoulisSynapse* > > syns ,const std::vector<double> &iext,RampGenerator * rg)
 {
 	double isyn =0;
 	double i_ext=0;
@@ -593,14 +637,13 @@ double update_euler(double _time, double dt,std::vector<VavoulisModel *> neurons
 		isyn=0;
 		for(int j=0; j< (int)syns[i].size();j++)
 		{
-			isyn+=syns[i][j]->Isyn();
-			syns[i][j]->update_variables(dt,_time);
+			isyn+=syns[i][j]->Isyn(); //Obtain the synaptic current
+			syns[i][j]->update_variables(dt,_time); //Update synapse variables
 		}
-		i_ext = rg->get_ext(iext[i],_time);
+		i_ext = rg->get_ext(iext[i],_time); 
 		neurons[i]->update_variables( dt, _time, i_ext,isyn);
 	}
 
-	return iext[0];
 }
 
 
@@ -621,11 +664,11 @@ void detect_spikes(FILE * f_spks, std::vector<VavoulisModel *> const & neurons, 
 		{
 			fst_inrow = false;
 
-			if(neurons[n]->V() >SPIKE_TH)
+			if(neurons[n]->V() >SPIKE_TH) //Spike must be over a threshold. 
 				buff += to_string(neurons[n]->V()) +" ";
 		}
 		else
-				buff +=", ";
+				buff +=", "; //No spike value. 
 
 		prevs[n]=dev;
 
@@ -746,22 +789,3 @@ void show_help()
 	cout << endl;
 
 }
-
-
-// int write_file(FILE * f,int connection)
-// {
-// 	if(connection == 0)
-// 		fprintf(f, "%f %f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V(),c);
-// 	else if(connection == 1)
-// 		// fprintf(f, "%f %f %f\n", t,n1m.V(),n2v.V());
-// 		fprintf(f, "%f %f %f %f %f\n", t,n1m.V(),n2v.V(),n1m_isyn,n2v_isyn);
-// 	else if(connection == 2)
-// 		fprintf(f, "%f %f %f %f\n", t,n1m.V(),n2v.V(),n3t.V());
-// 	else if(connection == 3)
-// 		fprintf(f, "%f %f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V(),c);
-// 	// else if(connection == 4)
-// 	// 	// fprintf(f, "%f %f %f %f %f %f %f %f %f %f\n", t,so.V(),so.publics[VavoulisModel::_isyn,n1m.V(),n1m.publics[VavoulisModel::_isyn,n2v.V(),n2v.publics[VavoulisModel::_isyn,n3t.V(),n3t.publics[VavoulisModel::_isyn,c);
-// 		// fprintf(f, "%f %f %f %f %f %f %f %f %f\n", t,so.V(),so_isyn,n1m.V(),n1m_isyn,n2v.V(),n2v_isyn,n3t.V(),n3t_isyn);
-// 	else
-// 		fprintf(f, "%f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V());
-// }
