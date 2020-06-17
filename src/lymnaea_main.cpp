@@ -21,22 +21,23 @@ make vavocplus connection=3 file_name=prueba_time integration=-r dt=0.0006 c_so=
 #include <iostream>
 
 // #include "vavoulis_neuron.h"
-#include "ramp_generator.h"
-#include "vavoulis_synapse.h"
+// #include "ramp_generator.h"
+// #include "vavoulis_synapse.h"
+#include "cpg_simulator.h"
 
 using namespace std;
 
 #define n_variables 8
 
 #define DUR_BURST 2300 //mseconds	
-#define MAX_VARS 18
+// #define MAX_VARS 18
 
-#define N_NEU 4
-#define N_VARS 6
+// #define N_NEU 4
+// #define N_VARS 6
 
 
-#define SPIKE_TH -50.0
-#define MIN_SPIKE_CHANGE 0.001
+// #define SPIKE_TH -50.0
+// #define MIN_SPIKE_CHANGE 0.001
 
 
 
@@ -51,8 +52,11 @@ string arg_names[]={"-connection","-file_name","-integrator","-dt","-c_so","-c_n
 string format = "Format: ./lymn -connection val -file_name val -integration_method -dt val val -c_so val -c_n1m val -c_n2v val -c_n3t val -stim_dur val -stim_inc val -MIN_c val -MAX_c val [-secs_dur val] -rounds val -feed_ini val -feed_end val\n";
 prim_types arg_types[]={Integer,String,IntegrationMeth,Double,Double,Double,Double,Double,Double,Double,Double,Double,Double,Integer,Double,Double};
 
-	string headers[] = {"t SO N1M N2v N3t c", "t N1M N2v IsynN1M IsynN2v","t N1M N2v N3t","t SO N1M N2v N3t c","t SO IsynSO N1M IsynN1M N2v IsynN2v N3t IsynN3t",
+string headers[] = {"t SO N1M N2v N3t c", "t N1M N2v IsynN1M IsynN2v","t N1M N2v N3t","t SO N1M N2v N3t c","t SO IsynSO N1M IsynN1M N2v IsynN2v N3t IsynN3t",
 			"t SO N1M N2v N3t", "t SO N1M N2v N3t c"};
+
+//TODO: methods in new class?
+string methods[] = {"Euler","Runge-Kutta"}; 
 
 
 int parse_input(int argc,char *argv[], void ** arguments);
@@ -67,7 +71,7 @@ int main(int argc, char * argv[])
 	char file_ext[MAX_STRING];
 	double secs_dur = -1;
 	int iters =-1;
-	integrators integration = EULER;
+	CPGSimulator::integrators integration = CPGSimulator::EULER;
 	double dt=0.01;
 	double c_so=-1,c_n1m=-1,c_n2v=-1,c_n3t=-1;
 	double stim_dur=-1;
@@ -143,9 +147,12 @@ int main(int argc, char * argv[])
 	else //If duration is specified, use it for iters computation. 
 		iters = (secs_dur*1000 )/dt;
 
-	feed_ini= (feed_ini*1000)/dt;
-	feed_end= (feed_end*1000)/dt;
-	cout << feed_ini << " " << feed_end<< endl;
+	if(feed_ini >0 and feed_end >0){
+
+		feed_ini= (feed_ini*1000)/dt;
+		feed_end= (feed_end*1000)/dt;
+	}
+	// cout << feed_ini << " " << feed_end<< endl;
 
 
 	///////////////////////////////////////
@@ -162,6 +169,15 @@ int main(int argc, char * argv[])
 	fprintf(f, "%s\n",header );
 	fprintf(f_spks,"%f\n",SPIKE_TH);
 	fprintf(f_spks, "%s\n",header );
+
+
+	CPGSimulator cpg;
+
+	std::vector<double> c_values({c_so,c_n1m,c_n2v,c_n3t});
+
+	cpg.init(connection,c_values);
+
+	cpg.print();
 
 	///////////////////////////////////////
 	//Print parameters used. 
@@ -185,14 +201,13 @@ int main(int argc, char * argv[])
 	cout << endl;
 
 
-	std::vector<double> c_values({c_so,c_n1m,c_n2v,c_n3t});
 
 
 	//Starting clock
 	clock_t begin = clock();
 
 
-	cpg.simulate(f,f_spks,iters,rg,connection,c_values);
+	cpg.simulate(f,f_spks,iters,dt,integration,feed_ini,feed_end,connection);
 	
 
 	clock_t end = clock();
@@ -210,39 +225,6 @@ int main(int argc, char * argv[])
 }
 
 
-
-
-void detect_spikes(FILE * f_spks, std::vector<VavoulisModel *> const & neurons, std::vector<double> &prevs, double t )
-{
-
-	bool fst_inrow = true;
-	string buff ="";
-	double dev;
-
-	for(int n=0; n<(int)neurons.size(); ++n)
-	{	
-		dev = neurons[n]->getdV();
-		//0.001 less than that change in the derivative is not a spike
-		//NOTE: it might be necessary to adjust MIN_SPIKE_CHANGE for different spike shapes. 
-		if(prevs[n] >0 && dev <0 && (prevs[n]-dev)>MIN_SPIKE_CHANGE) //If it's a spike (from pos derivate to 0 derivate)
-		{
-			fst_inrow = false;
-
-			if(neurons[n]->V() >SPIKE_TH)
-				buff += to_string(neurons[n]->V()) +" ";
-		}
-		else
-				buff +=", ";
-
-		prevs[n]=dev;
-
-	}
-	if(!fst_inrow)
-	{
-			fprintf(f_spks,"%f %s\n",t,buff.c_str());
-	}
-		
-}
 
 
 int parse_input(int argc,char *argv[], void ** arguments)

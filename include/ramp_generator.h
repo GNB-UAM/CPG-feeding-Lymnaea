@@ -26,6 +26,10 @@ class RampGenerator
 		*/
 		RampGenerator(double min, double max, double stim_inc, double stim_dur);
 
+		/*! RampGenerator empty constructor
+		*/
+		RampGenerator(){min=0;max=0;stim_inc=0;stim_dur=0;};
+
 
 		/*!
 		* @brief Computes the corresponding value 

@@ -111,6 +111,7 @@ public:
 	double Isyn(double v);
 	// double Isyn_runge(double _s,double _v);
 	void print_params();
+	void print();
 
 
 

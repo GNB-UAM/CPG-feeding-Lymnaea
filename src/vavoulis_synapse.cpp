@@ -134,6 +134,15 @@ void VavoulisSynapse::showParams()
 		cout <<params[i] << " ";
 }
 
+void VavoulisSynapse::print()
+{
+	cout << "Pos: ";
+	pos->print(); cout<< endl;
+	cout << "Pre: "; pre->print();  cout<< endl;
+}
+
+
+
 // void VavoulisSynapse::update(VavoulisModel::integrators integr,double dt)
 // {
 // 	if(integr == VavoulisModel::EULER)

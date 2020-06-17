@@ -198,16 +198,10 @@ double VavoulisModel::dva(double _v,double _va,double _h,double _n)
 }
 
 
-
-///////////////////////////////////////////////////////////
-////////////	INTEGRATION RUTINES
-///////////////////////////////////////////////////////////
-
-
 void VavoulisModel::funcion_simple(double _time, vector<double> &vars, vector<double> &fvec, double iext,double i_syn)
 {	
 	this->isyn=i_syn;
-	// iext = rg->get_ext(iext,_time);
+
 	fvec[v] = dvs(vars[v],vars[va],vars[p],vars[q],iext,i_syn); 
 	fvec[p] = dp(vars[v],vars[va],vars[p]);
 	fvec[q] = dq(vars[v],vars[va],vars[q]);
@@ -244,15 +238,6 @@ void VavoulisModel::set_variables(const std::vector<double> &v)
 
 
 
-// void VavoulisSynapse::funcion_simple(double time, std::vector<double> &fvec, double vpre)
-// {
-// 	fvec[s] = ds(_variables[r],_variables[s]); 
-// 	fvec[r] = dr(vpre,_variables[r]);
-
-//    return;
-// }
-
-
 
 void VavoulisModel::update_variables(double dt, double time, double iext,double i_syn)
 {
@@ -283,3 +268,7 @@ void VavoulisModel::setVar(int index,double value)
 	_variables[index] = value;
 }
 
+void VavoulisModel::print()
+{
+	printf("%s %.2f",getName(),V());
+}

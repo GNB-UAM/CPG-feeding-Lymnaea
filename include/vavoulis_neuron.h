@@ -166,6 +166,7 @@ public:
 	
 	// double update_euler(double _time, double dt, double iext,RampGenerator * rg);
 
+	void print();
 private: 
 		/////////////////////////////////////////////////////////////////
 	//////////// 			SOMA 		///////////////////////
