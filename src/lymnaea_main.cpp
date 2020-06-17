@@ -274,9 +274,13 @@ int main(int argc, char * argv[])
 	else //If duration is specified, use it for the total iterations in the model. 
 		iters = (secs_dur*1000 )/dt;
 
+	if(feed_ini > 0 && feed_end > 0)
+	{
 	feed_ini= (feed_ini*1000)/dt;
 	feed_end= (feed_end*1000)/dt;
-	cout << feed_ini << " " << feed_end<< endl;
+		
+	}
+	// cout << feed_ini << " " << feed_end<< endl;
 
 
 	///////////////////////////////////////
