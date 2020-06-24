@@ -1,0 +1,114 @@
+This model is an implementation of the Lymnaea feeding C\+PG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit\+: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. \href{https://doi.org/10.1111/j.1460-9568.2007.05517.x}{\texttt{ https\+://doi.\+org/10.\+1111/j.\+1460-\/9568.\+2007.\+05517.\+x}} \mbox{[}1\mbox{]} and used in study of dynamical invaraiants in Alicia Garrido-\/\+Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020. \mbox{[}2\mbox{]}
+
+Please, if you use this implementation cite the two papers above in your work.
+
+You can find a summary of the model here implemented in \mbox{[}2\mbox{]} and a detailed description of the model and all the equations here implemented in \mbox{[}1\mbox{]}.
+
+A Central Pattern Generator (C\+PG) is a neural circuit which is capable to generate authonomously, robust sequencies of neural activity which are usually related to motor activity in many individuals, including humans.\+The model here implemented represents a feeding C\+PG in the mollusk Lymnaea Stagnalis, composed by its three main neurons leading the rhythm\+: N1M, N2v and N3t and a fourth modulator neuron called SO.
+
+This C\+PG model is based in Hodking-\/\+Huxley formalism and is formed by two compartments model (soma-\/axon) with the slow and fast activity differentiated en each of them. The connections in the circuits are implemented by a gradual synapse also defined by Vavoulis et al. where the wave form in the activity has a key role.
+
+The neurons in the model are not endogenously variable, but it is possible to induce variability by changing the current injected to each neuron throghout the simulation. For this purpose, \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} calculates stimulation ramp as used in \mbox{[}2\mbox{]}, which can be applied to any of the four neurons in the circuit.\hypertarget{md_README_autotoc_md1}{}\doxysection{Configuration and first run}\label{md_README_autotoc_md1}
+\hypertarget{md_README_autotoc_md2}{}\doxysubsection{Generate documentation}\label{md_README_autotoc_md2}
+By running \begin{DoxyVerb}make doxygen 
+\end{DoxyVerb}
+
+
+the documentation for this implementation will be generated in html and latex form.\hypertarget{md_README_autotoc_md3}{}\doxysubsection{Build}\label{md_README_autotoc_md3}
+If it is the first time you use this model first run\+: \begin{DoxyVerb}make init
+\end{DoxyVerb}
+
+
+This will create data and images directories.
+
+To build the project do\+: \begin{DoxyVerb}make 
+\end{DoxyVerb}
+
+
+This will create the executable file called feeding\+\_\+cpg. By running \begin{DoxyVerb}./feeding_cpg --help 
+\end{DoxyVerb}
+
+
+an explanation of the input arguments will prompt.\hypertarget{md_README_autotoc_md4}{}\doxysubsection{Data recording}\label{md_README_autotoc_md4}
+\hypertarget{md_README_autotoc_md5}{}\doxysubsection{Choosing integrator and integration increment}\label{md_README_autotoc_md5}
+-\/integrator flag is used to choose between Euler or Runge-\/\+Kutta integration method. -\/dt is used to choose integration increment. While this model is able to generate spiking activity at high step values (0.\+01), when temporal study is required, it is recommended to use Euler at least at 0.\+001 or Runge-\/\+Kutta method for more precission results.\hypertarget{md_README_autotoc_md6}{}\doxysubsection{Example run complete circuit (no ramp)}\label{md_README_autotoc_md6}
+For an example simulation of 10 seconds you can run the model with the following arguments\+: \begin{DoxyVerb}./feeding_cpg -connection 3 -file_name ./data/complete -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 10
+\end{DoxyVerb}
+
+
+This will run a simulation with the complete model (connection=3) integrated by Euler method using 0.\+001 as time step for 10 seconds. Each neuron will be stimulated by 8.\+5, 6, 2 and 0 values.
+
+To see the result run \begin{DoxyVerb}make plot_last or sh ./utils/plot_last.sh
+\end{DoxyVerb}
+
+
+(see section Plot Utils for more options)\hypertarget{md_README_autotoc_md7}{}\doxysubsection{Example run with ramp}\label{md_README_autotoc_md7}
+For an example of neuron stimulation by a ramp current injection the current value for the neuron which you want to stimulate must be -\/1. \begin{DoxyVerb}./feeding_cpg -connection 3 -file_name ./data/n1m-driven -integrator -e -dt 0.001 -c_so 8.5 -c_n1m -1 -c_n2v 2 -c_n3t 0 -stim_dur 4.6 -stim_inc 0.5 -MIN_c 0 -MAX_c 10 -rounds 4
+\end{DoxyVerb}
+
+
+This will run a simulation with the complete model (connection=3) integrated by Euler method using 0.\+001 as time step, where neuron N1M is stimulated by the ramp value, which will go from 0 (M\+I\+N\+\_\+c) to 10 (M\+A\+X\+\_\+c) and back twice (rounds=4), the duration of the stimulous is 4.\+6 secs (stim\+\_\+dur) and the increment of the current value is 0.\+5 (stim\+\_\+inc). Since -\/secs\+\_\+dur is not given, the duration time depends on the ramp, when given, the time will be fixed to the specified value.
+
+Note\+: More than one neuron can be stimulated by the ramp but it is usually not convinient for the rhythm. The ideal is that only one neuron has the stimulation by ramp in each simulation, whereas the rest of them are stimulated by a constant current value.
+
+To see the result run \begin{DoxyVerb}make plot_last or sh ./utils/plot_last.sh
+\end{DoxyVerb}
+
+
+(see section Plot Utils for more options)\hypertarget{md_README_autotoc_md8}{}\doxysubsection{Example run simulating satiated behaviour}\label{md_README_autotoc_md8}
+For an example simulation of 20 seconds with satiated situation in the feeding C\+PG simulation between 7s (satiated\+\_\+ini) and 13s (satiated\+\_\+end) you can run the model with the following arguments\+: \begin{DoxyVerb}./feeding_cpg -connection 3 -file_name ./data/feeding -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 20 -satiated_ini 7 -satiated_end 13.
+\end{DoxyVerb}
+
+
+After finishing the satiated feeding mode and starting over again the rhythm, current values will stay as they were before the begining of this scenario.
+
+To see the result run \begin{DoxyVerb}make plot_last or sh ./utils/plot_last.sh
+\end{DoxyVerb}
+
+
+(see section Plot Utils for more options)\hypertarget{md_README_autotoc_md9}{}\doxysubsubsection{Connectivity options}\label{md_README_autotoc_md9}
+\hypertarget{md_README_autotoc_md10}{}\doxyparagraph{N1\+M-\/\+N2v}\label{md_README_autotoc_md10}
+\begin{DoxyVerb}./feeding_cpg -connection 1 -file_name ./data/complete -integrator -e -dt 0.001 -c_n1m 6 -c_n2v 2 -secs_dur 10
+\end{DoxyVerb}
+
+
+Going back to the first example, we can use the same configuration in order to run a simulation where only N1M and N2v are connected (connection=1). The file generated only contains the V value of these two neurons.\hypertarget{md_README_autotoc_md11}{}\doxyparagraph{N1\+M-\/\+N2v-\/\+N3t}\label{md_README_autotoc_md11}
+\begin{DoxyVerb}./feeding_cpg -connection 3 -file_name ./data/complete -integrator -e -dt 0.001 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 10
+\end{DoxyVerb}
+
+
+Changing \char`\"{}-\/connection\char`\"{} argument and adding -\/c\+\_\+n3t value, N1M, N2v and N3t will be connected during the simulation. The file generated only contains the V value of these three neurons.\hypertarget{md_README_autotoc_md12}{}\doxyparagraph{Complete circuit\+: N1\+M-\/\+N2v-\/\+N3t-\/\+SO}\label{md_README_autotoc_md12}
+\begin{DoxyVerb}./feeding_cpg -connection 3 -file_name ./data/complete -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 10
+\end{DoxyVerb}
+
+
+See Example run complete circuit (no ramp).\hypertarget{md_README_autotoc_md13}{}\doxyparagraph{Complete circuit with synapses}\label{md_README_autotoc_md13}
+./feeding\+\_\+cpg -\/connection 4 -\/file\+\_\+name ./data/complete\+\_\+syn -\/integrator -\/e -\/dt 0.\+001 -\/c\+\_\+so 8.\+5 -\/c\+\_\+n1m 6 -\/c\+\_\+n2v 2 -\/c\+\_\+n3t 0 -\/secs\+\_\+dur 10
+
+The recorded file includes each neuron voltage in the soma and the synaptic current received (connection=4).\hypertarget{md_README_autotoc_md14}{}\doxyparagraph{Complete circuit without ramp}\label{md_README_autotoc_md14}
+./feeding\+\_\+cpg -\/connection 5 -\/file\+\_\+name ./data/complete\+\_\+syn -\/integrator -\/e -\/dt 0.\+001 -\/c\+\_\+so 8.\+5 -\/c\+\_\+n1m 6 -\/c\+\_\+n2v 2 -\/c\+\_\+n3t 0 -\/secs\+\_\+dur 10
+
+The recorded file includes each neuron voltage and ramp stimulation current is not included (connection$>$=5).\hypertarget{md_README_autotoc_md15}{}\doxysubsection{Plot Utils}\label{md_README_autotoc_md15}
+In directory utils you can find some code in python to visualized the generated data during the simulation.
+
+Plot last file generated in data/ using Python3.\+6. It is plotted in both modes\+: no-\/spike and spike. \begin{DoxyVerb}make plot_last or sh ./utils/plot_last.sh
+\end{DoxyVerb}
+
+
+Plot file with file\+\_\+name. If path is not specified, file generated in data/ using Python3.\+6 will be plotted. \begin{DoxyVerb}python3 plot.py <path> <file_name> 
+\end{DoxyVerb}
+
+
+Plot file with file\+\_\+name in path with the spikes detected. If path is not specified, file generated in data/ using Python3.\+6 will be plotted. \begin{DoxyVerb}python3 plot_with_spikes.py <path> <file_name>
+\end{DoxyVerb}
+
+
+Warning\+: This plotting tool might have difficulties plotting large files, you can use other plotting tools such as gnunplot.\hypertarget{md_README_autotoc_md16}{}\doxysubsection{Developed by}\label{md_README_autotoc_md16}
+Alicia Garrido Peña, PhD in Universidad Autónoma de Madrid. Grupo de Neurocomputación biológica (G\+NB)
+
+\href{http://www.ii.uam.es/~gnb/}{\texttt{ http\+://www.\+ii.\+uam.\+es/$\sim$gnb/}}
+
+Special thanks to the rest of the members in the group for their help and advice.\hypertarget{md_README_autotoc_md17}{}\doxysubsection{Contact}\label{md_README_autotoc_md17}
+For any questions, please, contact me on\+:
+
+\href{mailto:alicia.garrido@uam.es}{\texttt{ alicia.\+garrido@uam.\+es}} 

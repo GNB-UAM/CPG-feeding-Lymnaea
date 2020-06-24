@@ -1,3 +1,13 @@
+/*************************************************************
+	Developed by Alicia Garrido Peña (2020)
+
+	Implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x
+	and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020.
+	
+	Please, if you use this implementation cite the two papers above in your work. 
+*************************************************************/
+
+
 #include <vector>
 #include <math.h>
 #include <iterator>
@@ -52,13 +62,19 @@ using namespace std;
  * Single neuron class following Vavoulis et al. description.
  */
 class VavoulisModel{
-	enum vars_names {v,va,p,q,h,n,n_variables}; //< Varibles names references for _variables array
-	enum pars_names {g_ecs,g_eca,n_params}; //< Parameters names references for _params array
-	double _variables[n_variables]; //< Variables array. All elements in this array have a differential equation associated in the form of dvar(...)
-	double params[n_params]; //< Parameter array
-	double dv_value; //< Last dv_value computed
-	double isyn; //< Last synaptic input received
-	double n_syns; //< Number of synapses received by this neuron. 
+	/*!
+	 Varibles names references for _variables array
+	*/
+	enum vars_names {v,va,p,q,h,n,n_variables}; 
+	/*!
+	 Parameters names references for _params array
+	*/
+	enum pars_names {g_ecs,g_eca,n_params}; 
+	double _variables[n_variables]; ///< Variables array. All elements in this array have a differential equation associated in the form of dvar(...)
+	double params[n_params]; ///< Parameter array
+	double dv_value; ///< Last dv_value computed
+	double isyn; ///< Last synaptic input received
+	double n_syns; ///< Number of synapses received by this neuron. 
 
 public:
 	/*!
@@ -71,10 +87,8 @@ public:
 	enum types{SO,N1M,N2v,N3t,n_types};
 
 	const char * names[n_types]; ///< Array with each neuron name. 
-	// enum integrators{EULER,RUNGE,n_integrators};
 	types type; ///< Neuron type from types 
 
-	// std::vector<void *> synapses;
 
 	/*! VavoulisModel constructor
 	* @brief Creates a new neuron model with all the corresponding params and variables initial values depending on its type.
@@ -108,33 +122,27 @@ public:
  	*/
 	double getIsyn(){return isyn;}
 
-	// void update(integrators integr,double dt,double i_ext,double isyn);
-
-
-	// void add_synapse(VavoulisSynapse * synapse);
-	// void update_synapses(integrators integr,double dt);
-	// double Isyn();
-
-	// int n_syns;
+	
+	/*!
+ 	* @brief Name getter
+ 	* @return Neuron name string 
+ 	*/
 	const char * getName();
 
-	// void addSynapse(void * syn);
-	void sumValue(int index,double value);
-	double getVar(int index); 
-	void setVar(int index,double value);
 
 
-	double getNSynapses(){return n_syns;}//< Number of synapses getter. 
-	// double getNVarsTotal();
-	// double getNVars(){return n_variables;}
+	double getNSynapses(){return n_syns;}///< Number of synapses getter. 
 	
-	static int getNVars(){return n_variables;}//< returns the number of variables. 
+	static int getNVars(){return n_variables;}///< returns the number of variables. 
 
+	void sumValue(int index,double value);///< Sets _variables[index]+=value
+	double getVar(int index); ///< Returns _variables[index]
+	void setVar(int index,double value);///< Sets _variables[index]=value
+	
 	/*!
 	 * 
 	 * @brief variables array getter
 	 * @return A copy of variables array as a std vector.
-	 * @see Vavoulis et al. 
 	 */
 	std::vector<double> getVariables();
 
@@ -143,29 +151,37 @@ public:
 	 * @brief Updates the n_variables in variables array with the data in v. 
 	 * @param v vector containing new variables values.
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
 	 */
 	void set_variables(const std::vector<double> &v);
 
-	// void funcion_simple(double _time, double *vars, double *fvec,double v_vars[n_types] , double iext,RampGenerator * rg);
-	// void funcion_simple(double _time, double *vars, double *fvec,double v_vars[n_types][18] , double iext,RampGenerator * rg);
-	// void update_variables(double dt, double time, double iext,double i_syn);
+	
+	/*!
+	 * @brief Integrates variables based on dt.
+	 * @param dt Integration time step
+	 * @param time Current time for the differential equation. 
+	 * @param iext injected current received.
+	 * @param i_syn synaptic current received.
+	 */
 	void update_variables(double dt, double time, double iext,double i_syn);
+
 	/*!
 	 * 
 	 * @brief Returns an array with all values obtained by the differential equations
 	 * @param _time Current time for the differential equation. 
-	 * @param vars vector with previous instant variables vales. 
+	 * @param vars vector with previous instant variables values. 
 	 * @param fvec return vector with computed differential values.
 	 * @param iext injected current received.
-	 * @param isyn synaptic current received.
-	 * @param rg RampGenerator object. 
-	 * @see Vavoulis et al. 
+	 * @param i_syn synaptic current received.
 	 */
-	void funcion_simple(double _time, vector<double> &vars, vector<double> &fvec, double iext,double i_syn);
+	void diffs_fun(double _time, vector<double> &vars, vector<double> &fvec, double iext,double i_syn);
 	
-	// double update_euler(double _time, double dt, double iext,RampGenerator * rg);
 
+	/*!
+	*
+	* @brief Prints Neuron.
+	* Format: 
+	*  		Neuron-Name V-value
+	*/
 	void print();
 private: 
 		/////////////////////////////////////////////////////////////////
@@ -179,7 +195,7 @@ private:
 	 * @param _va Voltage value at axon compartment
 	 * @param _p previous p value. (usually _variables[p])
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dp(double _v,double _va,double _p); 
 
@@ -190,7 +206,7 @@ private:
 	 * @param _va Voltage value at axon compartment
 	 * @param _q previous q value. (usually _variables[q])
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dq(double _v,double _va,double _q);
 
@@ -202,7 +218,7 @@ private:
 	 * @param _p value (usually _variables[p])
 	 * @param _q value (usually _variables[q])
 	 * @return channel value in mV. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	//Channel current based on the current neuron
 	double Ixs(double _v,double _p,double _q);
@@ -217,7 +233,7 @@ private:
 	 * @param iext injected current received.
 	 * @param isyn synaptic current received.
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dvs(double _v,double _va,double _p,double _q, double iext,double isyn);
 
@@ -231,7 +247,7 @@ private:
 	 * @param _va Voltage value at axon compartment
 	 * @param _h previous h value. (usually _variables[h])
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dh(double _va,double _h);
 
@@ -241,7 +257,7 @@ private:
 	 * @param _va Voltage value at axon compartment
 	 * @param _n previous n value. (usually _variables[n])
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dn(double _va,double _n);
 	
@@ -251,7 +267,7 @@ private:
 	 * @param _va Voltage value at axonal compartment
 	 * @param _h value (usually _variables[h])
 	 * @return channel value in mV. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double Ina (double _va,double _h);
 	/*!
@@ -260,7 +276,7 @@ private:
 	 * @param _va Voltage value at axonal compartment.
 	 * @param _n value (usually _variables[n])
 	 * @return channel value in mV. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double Ik (double _va,double _n);
 
@@ -273,18 +289,9 @@ private:
 	 * @param _h value (usually _variables[h]).
 	 * @param _n value (usually _variables[n]).
 	 * @return result for the equation for the corresponding neuron. 
-	 * @see Vavoulis et al. 
+	 * @see Vavoulis et al. [1] 
 	 */
 	double dva(double _v,double _va,double _h,double _n);
-
-
-	// void funcion(double * variables, double * fvec, int iext,double isyn);
-	// double intey(double inc_integracion, double iext, double isyn);
-
-	// double update_runge(double dt, double iext,double isyn);
-
-	// double Isyn_total(double *);
-
 
 
 };

@@ -1,0 +1,281 @@
+\hypertarget{classCPGSimulator}{}\doxysection{C\+P\+G\+Simulator Class Reference}
+\label{classCPGSimulator}\index{CPGSimulator@{CPGSimulator}}
+
+
+{\ttfamily \#include $<$cpg\+\_\+simulator.\+h$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{integrators}} \{ {\bfseries E\+U\+L\+ER}, 
+{\bfseries R\+U\+N\+GE}, 
+{\bfseries n\+\_\+integrators}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCPGSimulator_a666cecf85041cb91828647ed7558ba8b}\label{classCPGSimulator_a666cecf85041cb91828647ed7558ba8b}} 
+\mbox{\hyperlink{classCPGSimulator_a666cecf85041cb91828647ed7558ba8b}{C\+P\+G\+Simulator}} ()
+\begin{DoxyCompactList}\small\item\em Void constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classCPGSimulator_aa9f6ebeba21e1de2485303c9e94491a7}{C\+P\+G\+Simulator}} (int \mbox{\hyperlink{classCPGSimulator_a82a12ae4a2f156430b52105a46307b84}{connection}}, std\+::vector$<$ double $>$ \mbox{\hyperlink{classCPGSimulator_a990b5f10c824c4225f9709135ba8f8cb}{c\+\_\+values}}, \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} \mbox{\hyperlink{classCPGSimulator_a017e0f143e7ea9096bf7e6fe77ea78d0}{rg}})
+\begin{DoxyCompactList}\small\item\em Creates a new C\+PG simulator using init method. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classCPGSimulator_a7941d1560cf2270017e75b368f38e2a0}{init}} (int \mbox{\hyperlink{classCPGSimulator_a82a12ae4a2f156430b52105a46307b84}{connection}}, std\+::vector$<$ double $>$ \mbox{\hyperlink{classCPGSimulator_a990b5f10c824c4225f9709135ba8f8cb}{c\+\_\+values}}, \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} \mbox{\hyperlink{classCPGSimulator_a017e0f143e7ea9096bf7e6fe77ea78d0}{rg}})
+\begin{DoxyCompactList}\small\item\em Assign attributes value depending on the connection type. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCPGSimulator_a73cb2dc32d04e341c196955958424394}{simulate}} (F\+I\+LE $\ast$f, F\+I\+LE $\ast$f\+\_\+spks, double iters, double dt, \mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{integrators}} integration, double statiated\+\_\+ini, double satiated\+\_\+end)
+\begin{DoxyCompactList}\small\item\em Simulates activity in the C\+PG from the initialized \mbox{\hyperlink{classCPGSimulator}{C\+P\+G\+Simulator}}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a91805e7dd5a19ac0c7c0d26f202b8e9e}\label{classCPGSimulator_a91805e7dd5a19ac0c7c0d26f202b8e9e}} 
+void \mbox{\hyperlink{classCPGSimulator_a91805e7dd5a19ac0c7c0d26f202b8e9e}{print}} ()
+\begin{DoxyCompactList}\small\item\em Prints C\+PG components\+: All neurons and synapses initialized. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{classCPGSimulator_a5a1aa32da2d4d048f3659b99b0337d17}{update\+\_\+all}} (double \+\_\+time, \mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{integrators}} integr, double dt)
+\begin{DoxyCompactList}\small\item\em General update function, this function call either update\+\_\+euler or update\+\_\+runge. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCPGSimulator_a42c1e0719cf189ea80382058c9dabd61}{update\+\_\+euler}} (double \+\_\+time, double dt)
+\item 
+void \mbox{\hyperlink{classCPGSimulator_a8cea84035d7ff25721f30158ad2e0b6f}{update\+\_\+runge}} (double \+\_\+time, double dt)
+\begin{DoxyCompactList}\small\item\em Runge-\/\+Kutta update function, updates function using intey and diffs auxiliary function. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCPGSimulator_a7501b8579db6a2a4b6e718383d76b7ac}{diffs}} (double \+\_\+time, const std\+::vector$<$ std\+::vector$<$ double $>$ $>$ \&v\+\_\+variables, std\+::vector$<$ std\+::vector$<$ double $>$ $>$ \&v\+\_\+fvec)
+\begin{DoxyCompactList}\small\item\em Intey auxiliar function, obtains general vectors with the result of each differential equation for each neuron variables and its associated synapses. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classCPGSimulator_acabe119290fe7c06f32c782ea06573f1}{intey}} (double \+\_\+time, double inc\+\_\+integracion)
+\begin{DoxyCompactList}\small\item\em Performs Runge-\/\+Kutta integration with middle steps. New variable defined with a \char`\"{}global\char`\"{} vector containing both neurons and synapses. Complete array example with N1\+M-\/\+N2v-\/\+N3t connection\+: SO neuron variables (no synapses)\+: v,va,p,q,h,n N1M neuron variables and synapses N1\+M-\/\+N2v;N1\+M-\/\+N3t\+: v,va,p,q,h,n,s,r,s,r N2v variables and synapses N2v-\/\+N1M\+: v,va,p,q,h,n,s,r N3t variables and synapses N3t-\/\+N1M;N3t-\/\+N2v\+: v,va,p,q,h,n,s,r,s,r. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCPGSimulator_aae9b9aba742c714a8c6a100a5a7be16d}{detect\+\_\+spikes}} (F\+I\+LE $\ast$f\+\_\+spks, std\+::vector$<$ double $>$ \&prevs, double t)
+\begin{DoxyCompactList}\small\item\em Detect possible spikes in each neuron and writes it in the associated spike file. When no spike is found \textquotesingle{},\textquotesingle{} is written in the corresponding column. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCPGSimulator_a928cbc8764aaf820df80153c84ab70f9}{write}} (F\+I\+LE $\ast$f, double t, double c)
+\begin{DoxyCompactList}\small\item\em Writes V value and Isyn or injected current depending on syns\+\_\+flag value. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classCPGSimulator_a634ad875c4de9ac6b8607cf41d1f2b48}\label{classCPGSimulator_a634ad875c4de9ac6b8607cf41d1f2b48}} 
+std\+::vector$<$ \mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $>$ \mbox{\hyperlink{classCPGSimulator_a634ad875c4de9ac6b8607cf41d1f2b48}{neurons}}
+\begin{DoxyCompactList}\small\item\em Vector of neurons. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a67b93dbb1c2ba4c3bc829a51c81fa8f4}\label{classCPGSimulator_a67b93dbb1c2ba4c3bc829a51c81fa8f4}} 
+int \mbox{\hyperlink{classCPGSimulator_a67b93dbb1c2ba4c3bc829a51c81fa8f4}{n\+\_\+neurons}}
+\begin{DoxyCompactList}\small\item\em number of neurons initialized \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a15300b9e57733e5fe7f28d1c1ee3d7fd}\label{classCPGSimulator_a15300b9e57733e5fe7f28d1c1ee3d7fd}} 
+std\+::vector$<$ vector$<$ \mbox{\hyperlink{classVavoulisSynapse}{Vavoulis\+Synapse}} $>$ $>$ \mbox{\hyperlink{classCPGSimulator_a15300b9e57733e5fe7f28d1c1ee3d7fd}{syns}}
+\begin{DoxyCompactList}\small\item\em Vector of synapses vector associated to each neuron. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a990b5f10c824c4225f9709135ba8f8cb}\label{classCPGSimulator_a990b5f10c824c4225f9709135ba8f8cb}} 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{classCPGSimulator_a990b5f10c824c4225f9709135ba8f8cb}{c\+\_\+values}}
+\begin{DoxyCompactList}\small\item\em Current value vector (same ids as neurons vector) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a017e0f143e7ea9096bf7e6fe77ea78d0}\label{classCPGSimulator_a017e0f143e7ea9096bf7e6fe77ea78d0}} 
+\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} \mbox{\hyperlink{classCPGSimulator_a017e0f143e7ea9096bf7e6fe77ea78d0}{rg}}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} object, contains ramp stimulation. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCPGSimulator_a82a12ae4a2f156430b52105a46307b84}\label{classCPGSimulator_a82a12ae4a2f156430b52105a46307b84}} 
+int \mbox{\hyperlink{classCPGSimulator_a82a12ae4a2f156430b52105a46307b84}{connection}}
+\begin{DoxyCompactList}\small\item\em Type of connection in the C\+PG. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classCPGSimulator}{C\+P\+G\+Simulator}} class Complete circuit class defines neurons and synapses between them to simulate the circuit activity. 
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classCPGSimulator_ae28a891db6377059287a688f964a53f9}\label{classCPGSimulator_ae28a891db6377059287a688f964a53f9}} 
+\index{CPGSimulator@{CPGSimulator}!integrators@{integrators}}
+\index{integrators@{integrators}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{integrators}{integrators}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{C\+P\+G\+Simulator\+::integrators}}}
+
+Integration methods types 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classCPGSimulator_aa9f6ebeba21e1de2485303c9e94491a7}\label{classCPGSimulator_aa9f6ebeba21e1de2485303c9e94491a7}} 
+\index{CPGSimulator@{CPGSimulator}!CPGSimulator@{CPGSimulator}}
+\index{CPGSimulator@{CPGSimulator}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{CPGSimulator()}{CPGSimulator()}}
+{\footnotesize\ttfamily C\+P\+G\+Simulator\+::\+C\+P\+G\+Simulator (\begin{DoxyParamCaption}\item[{int}]{connection,  }\item[{std\+::vector$<$ double $>$}]{c\+\_\+values,  }\item[{\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}}}]{rg }\end{DoxyParamCaption})}
+
+
+
+Creates a new C\+PG simulator using init method. 
+
+\mbox{\hyperlink{classCPGSimulator}{C\+P\+G\+Simulator}} constructor 
+\begin{DoxyParams}{Parameters}
+{\em connection} & type of connection between neurons \\
+\hline
+{\em c\+\_\+values} & Current value vector (same ids as neurons vector) \\
+\hline
+{\em rg} & \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} object, contains ramp stimulation routines \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classCPGSimulator_aae9b9aba742c714a8c6a100a5a7be16d}\label{classCPGSimulator_aae9b9aba742c714a8c6a100a5a7be16d}} 
+\index{CPGSimulator@{CPGSimulator}!detect\_spikes@{detect\_spikes}}
+\index{detect\_spikes@{detect\_spikes}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{detect\_spikes()}{detect\_spikes()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::detect\+\_\+spikes (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{f\+\_\+spks,  }\item[{std\+::vector$<$ double $>$ \&}]{prevs,  }\item[{double}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Detect possible spikes in each neuron and writes it in the associated spike file. When no spike is found \textquotesingle{},\textquotesingle{} is written in the corresponding column. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f\+\_\+spks} & Spikes file stream \\
+\hline
+{\em prevs} & vector of derivate previous values \\
+\hline
+{\em t} & time value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a7501b8579db6a2a4b6e718383d76b7ac}\label{classCPGSimulator_a7501b8579db6a2a4b6e718383d76b7ac}} 
+\index{CPGSimulator@{CPGSimulator}!diffs@{diffs}}
+\index{diffs@{diffs}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{diffs()}{diffs()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::diffs (\begin{DoxyParamCaption}\item[{double}]{\+\_\+time,  }\item[{const std\+::vector$<$ std\+::vector$<$ double $>$ $>$ \&}]{v\+\_\+variables,  }\item[{std\+::vector$<$ std\+::vector$<$ double $>$ $>$ \&}]{v\+\_\+fvec }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Intey auxiliar function, obtains general vectors with the result of each differential equation for each neuron variables and its associated synapses. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+time} & Current time instant \\
+\hline
+{\em v\+\_\+variables} & general vector matrix with all variables (neuron+synapses) \\
+\hline
+{\em v\+\_\+fvec} & general return vector matrix with all differential equations value for each variable (neuron+synapses) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a7941d1560cf2270017e75b368f38e2a0}\label{classCPGSimulator_a7941d1560cf2270017e75b368f38e2a0}} 
+\index{CPGSimulator@{CPGSimulator}!init@{init}}
+\index{init@{init}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily int C\+P\+G\+Simulator\+::init (\begin{DoxyParamCaption}\item[{int}]{connection,  }\item[{std\+::vector$<$ double $>$}]{c\+\_\+values,  }\item[{\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}}}]{rg }\end{DoxyParamCaption})}
+
+
+
+Assign attributes value depending on the connection type. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & type of connection between neurons \\
+\hline
+{\em c\+\_\+values} & Current value vector (same ids as neurons vector) \\
+\hline
+{\em rg} & \mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} object, contains ramp stimulation routines \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_acabe119290fe7c06f32c782ea06573f1}\label{classCPGSimulator_acabe119290fe7c06f32c782ea06573f1}} 
+\index{CPGSimulator@{CPGSimulator}!intey@{intey}}
+\index{intey@{intey}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{intey()}{intey()}}
+{\footnotesize\ttfamily double C\+P\+G\+Simulator\+::intey (\begin{DoxyParamCaption}\item[{double}]{\+\_\+time,  }\item[{double}]{inc\+\_\+integracion }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Performs Runge-\/\+Kutta integration with middle steps. New variable defined with a \char`\"{}global\char`\"{} vector containing both neurons and synapses. Complete array example with N1\+M-\/\+N2v-\/\+N3t connection\+: SO neuron variables (no synapses)\+: v,va,p,q,h,n N1M neuron variables and synapses N1\+M-\/\+N2v;N1\+M-\/\+N3t\+: v,va,p,q,h,n,s,r,s,r N2v variables and synapses N2v-\/\+N1M\+: v,va,p,q,h,n,s,r N3t variables and synapses N3t-\/\+N1M;N3t-\/\+N2v\+: v,va,p,q,h,n,s,r,s,r. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+time} & Current time instant \\
+\hline
+{\em inc\+\_\+integracion} & Time step \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a73cb2dc32d04e341c196955958424394}\label{classCPGSimulator_a73cb2dc32d04e341c196955958424394}} 
+\index{CPGSimulator@{CPGSimulator}!simulate@{simulate}}
+\index{simulate@{simulate}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{simulate()}{simulate()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::simulate (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{f,  }\item[{F\+I\+LE $\ast$}]{f\+\_\+spks,  }\item[{double}]{iters,  }\item[{double}]{dt,  }\item[{\mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{integrators}}}]{integration,  }\item[{double}]{satiated\+\_\+ini,  }\item[{double}]{satiated\+\_\+end }\end{DoxyParamCaption})}
+
+
+
+Simulates activity in the C\+PG from the initialized \mbox{\hyperlink{classCPGSimulator}{C\+P\+G\+Simulator}}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f} & File stream \\
+\hline
+{\em f\+\_\+spks} & Spikes file stream \\
+\hline
+{\em iters} & Iterations of the simulation \\
+\hline
+{\em dt} & Time step \\
+\hline
+{\em integration} & Integration Method \\
+\hline
+{\em satiated\+\_\+ini} & Start instant of satiated activity (in iterations) \\
+\hline
+{\em satiated\+\_\+end} & End instant of satiated activity (in iterations) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a5a1aa32da2d4d048f3659b99b0337d17}\label{classCPGSimulator_a5a1aa32da2d4d048f3659b99b0337d17}} 
+\index{CPGSimulator@{CPGSimulator}!update\_all@{update\_all}}
+\index{update\_all@{update\_all}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{update\_all()}{update\_all()}}
+{\footnotesize\ttfamily double C\+P\+G\+Simulator\+::update\+\_\+all (\begin{DoxyParamCaption}\item[{double}]{\+\_\+time,  }\item[{\mbox{\hyperlink{classCPGSimulator_ae28a891db6377059287a688f964a53f9}{integrators}}}]{integr,  }\item[{double}]{dt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+General update function, this function call either update\+\_\+euler or update\+\_\+runge. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+time} & Current time instant \\
+\hline
+{\em integr} & Integration Method \\
+\hline
+{\em dt} & Time step \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a42c1e0719cf189ea80382058c9dabd61}\label{classCPGSimulator_a42c1e0719cf189ea80382058c9dabd61}} 
+\index{CPGSimulator@{CPGSimulator}!update\_euler@{update\_euler}}
+\index{update\_euler@{update\_euler}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{update\_euler()}{update\_euler()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::update\+\_\+euler (\begin{DoxyParamCaption}\item[{double}]{\+\_\+time,  }\item[{double}]{dt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\begin{DoxyVerb}@brief Euler update function, updates
+\end{DoxyVerb}
+ 
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+time} & Current time instant \\
+\hline
+{\em dt} & Time step \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a8cea84035d7ff25721f30158ad2e0b6f}\label{classCPGSimulator_a8cea84035d7ff25721f30158ad2e0b6f}} 
+\index{CPGSimulator@{CPGSimulator}!update\_runge@{update\_runge}}
+\index{update\_runge@{update\_runge}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{update\_runge()}{update\_runge()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::update\+\_\+runge (\begin{DoxyParamCaption}\item[{double}]{\+\_\+time,  }\item[{double}]{dt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Runge-\/\+Kutta update function, updates function using intey and diffs auxiliary function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+time} & Current time instant \\
+\hline
+{\em dt} & Time step \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCPGSimulator_a928cbc8764aaf820df80153c84ab70f9}\label{classCPGSimulator_a928cbc8764aaf820df80153c84ab70f9}} 
+\index{CPGSimulator@{CPGSimulator}!write@{write}}
+\index{write@{write}!CPGSimulator@{CPGSimulator}}
+\doxysubsubsection{\texorpdfstring{write()}{write()}}
+{\footnotesize\ttfamily void C\+P\+G\+Simulator\+::write (\begin{DoxyParamCaption}\item[{F\+I\+LE $\ast$}]{f,  }\item[{double}]{t,  }\item[{double}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Writes V value and Isyn or injected current depending on syns\+\_\+flag value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em f} & File stream \\
+\hline
+{\em t} & time instant \\
+\hline
+{\em c} & current value \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/cpg\+\_\+simulator.\+h\item 
+src/cpg\+\_\+simulator.\+cpp\end{DoxyCompactItemize}

@@ -2,7 +2,7 @@
 
 This model is an implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x [1] and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020).	Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020. [2]
 
-Please, if you use this implementation cite the two paper above in your work. 
+Please, if you use this implementation cite the two papers above in your work. 
 
 You can find a summary of the model here implemented in [2] and a detailed description of the model and all the equations here implemented in [1].
 
@@ -13,7 +13,7 @@ This CPG model is based in Hodking-Huxley formalism and is formed by two compart
 The neurons in the model are not endogenously variable, but it is possible to induce variability by changing the current injected to each neuron throghout the simulation. For this purpose, RampGenerator calculates stimulation ramp as used in [2], which can be applied to any of the four neurons in the circuit. 
 
 
-## Configuration and first run##
+## Configuration and first run
 
 ### Generate documentation
 By running 
@@ -41,6 +41,10 @@ an explanation of the input arguments will prompt.
 
 ### Data recording
 
+### Choosing integrator and integration increment
+-integrator flag is used to choose between Euler or Runge-Kutta integration method. 
+-dt is used to choose integration increment. 
+While this model is able to generate spiking activity at high step values (0.01), when temporal study is required, it is recommended to use Euler at least at 0.001 or Runge-Kutta method for more precission results. 
 
 ### Example run complete circuit (no ramp)
 For an example simulation of 10 seconds you can run the model with the following arguments:
@@ -51,13 +55,15 @@ This will run a simulation with the complete model (connection=3) integrated by 
 
 To see the result run 
 
-	make plot_last or sh plot_last.sh
+	make plot_last or sh ./utils/plot_last.sh
 	
+	
+(see section Plot Utils for more options)
 
 ### Example run with ramp
 For an example of neuron stimulation by a ramp current injection the current value for the neuron which	you want to stimulate must be -1. 
 
-	./feeding_cpg -connection 3 -file_name ./data/n1m-driven -integrator -e -dt 0.001 -c_so 8.5 -c_n1m -1 -c_n2v 2 -c_n3t 0 -dt 0.001 -stim_dur 4.6 -stim_inc 0.5 -MIN_c 0 -MAX_c 10 -rounds 4
+	./feeding_cpg -connection 3 -file_name ./data/n1m-driven -integrator -e -dt 0.001 -c_so 8.5 -c_n1m -1 -c_n2v 2 -c_n3t 0 -stim_dur 4.6 -stim_inc 0.5 -MIN_c 0 -MAX_c 10 -rounds 4
 
 This will run a simulation with the complete model (connection=3) integrated by Euler method using 0.001 as time step, where neuron N1M is stimulated by the ramp value, which will go from 0 (MIN_c) to 10 (MAX_c) and back twice (rounds=4), the duration of the stimulous is 4.6 secs (stim_dur) and the increment of the current value is 0.5 (stim_inc). Since -secs_dur is not given, the duration time depends on the ramp, when given, the time will be fixed to the specified value.
 
@@ -65,18 +71,22 @@ Note: More than one neuron can be stimulated by the ramp but it is usually not c
 
 To see the result run 
 
-	make plot_last or sh plot_last.sh
+	make plot_last or sh ./utils/plot_last.sh
 	
-### Example run simulating feeding
-For an example simulation of 20 seconds with satiated situation in the feeding CPG simulation between 7s (feed_ini) and 13s (feed_end) you can run the model with the following arguments:
+(see section Plot Utils for more options)
 
-	./feeding_cpg -connection 3 -file_name ./data/feeding -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -dt 0.001 -secs_dur 20 -feed_ini 7 -feed_end 13.
+### Example run simulating satiated behaviour
+For an example simulation of 20 seconds with satiated situation in the feeding CPG simulation between 7s (satiated_ini) and 13s (satiated_end) you can run the model with the following arguments:
+
+	./feeding_cpg -connection 3 -file_name ./data/feeding -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 20 -satiated_ini 7 -satiated_end 13.
 
 After finishing the satiated feeding mode and starting over again the rhythm, current values will stay as they were before the begining of this scenario.
 
-To see the result run (see section Plot Utils for more options)
+To see the result run 
 
-	make plot_last or sh plot_last.sh
+	make plot_last or sh ./utils/plot_last.sh
+
+(see section Plot Utils for more options)
 
 #### Connectivity options
 ##### N1M-N2v
@@ -101,25 +111,31 @@ See Example run complete circuit (no ramp).
 ##### Complete circuit with synapses
 	./feeding_cpg -connection 4 -file_name ./data/complete_syn -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 10
 
-The recorded file includes each neuron voltage in the soma and the synaptic current received. 
+The recorded file includes each neuron voltage in the soma and the synaptic current received (connection=4). 
 
 ##### Complete circuit without ramp
 	./feeding_cpg -connection 5 -file_name ./data/complete_syn -integrator -e -dt 0.001 -c_so 8.5 -c_n1m 6 -c_n2v 2 -c_n3t 0 -secs_dur 10
+
+The recorded file includes each neuron voltage and ramp stimulation current is not included (connection>=5). 
+
 	
 ### Plot Utils 
 In directory utils you can find some code in python to visualized the generated data during the simulation. 
 	
-Plot last file generated in data/ using Python3.6
+Plot last file generated in data/ using Python3.6. It is plotted in both modes: no-spike and spike. 
 
-	make plot_last or sh plot_last.sh
+	make plot_last or sh ./utils/plot_last.sh
 
-Plot file with file_name in path. If path is not specified, file generated in data/ using Python3.6 will be plotted.
+Plot file with file_name. If path is not specified, file generated in data/ using Python3.6 will be plotted.
 
 	python3 plot.py <path> <file_name> 
 
 Plot file with file_name in path with the spikes detected. If path is not specified, file generated in data/ using Python3.6 will be plotted.
 
 	python3 plot_with_spikes.py <path> <file_name>
+
+Warning:
+This plotting tool might have difficulties plotting large files, you can use other plotting tools such as gnunplot.
 
 ### Developed by ###
 Alicia Garrido Peña, PhD in Universidad Autónoma de Madrid. Grupo de Neurocomputación biológica (GNB)
@@ -132,4 +148,6 @@ Special thanks to the rest of the members in the group for their help and advice
 
 For any questions, please, contact me on:
 
- 	alicia.garrido@uam.es
+alicia.garrido@uam.es
+
+

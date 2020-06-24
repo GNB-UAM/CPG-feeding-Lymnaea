@@ -1,3 +1,13 @@
+/*************************************************************
+	Developed by Alicia Garrido Peña (2020)
+
+	Implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x
+	and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020.
+	
+	Please, if you use this implementation cite the two papers above in your work. 
+*************************************************************/
+
+
 #include "vavoulis_synapse.h"
 #include <iostream>
 using namespace std;
@@ -75,7 +85,7 @@ double VavoulisSynapse::Isyn()
 
 
 
-void VavoulisSynapse::funcion_simple(double time, const std::vector<double> & vars, std::vector<double> &fvec, double vpre)
+void VavoulisSynapse::diffs_fun(double time, const std::vector<double> & vars, std::vector<double> &fvec, double vpre)
 {
 	fvec[s] = ds(vars[r],vars[s]); 
 	fvec[r] = dr(vpre,vars[r]);
@@ -83,7 +93,7 @@ void VavoulisSynapse::funcion_simple(double time, const std::vector<double> & va
    return;
 }
 
-void VavoulisSynapse::funcion_simple(double time, std::vector<double> &fvec, double vpre)
+void VavoulisSynapse::diffs_fun(double time, std::vector<double> &fvec, double vpre)
 {
 	fvec[s] = ds(_variables[r],_variables[s]); 
 	fvec[r] = dr(vpre,_variables[r]);
@@ -111,7 +121,7 @@ void VavoulisSynapse::update_variables(double dt, double time, double vpre)
 	std::vector<double>  fvec(n_variables);
 	std::vector<double> vars(_variables,_variables+n_variables);
 
-	funcion_simple(time,vars,fvec,vpre);
+	diffs_fun(time,vars,fvec,vpre);
 
 	for (int i = 0; i < n_variables; ++i)
 	{
@@ -128,7 +138,7 @@ void VavoulisSynapse::update_variables(double dt, double time)
 }
 
 
-void VavoulisSynapse::showParams()
+void VavoulisSynapse::print_params()
 {
 	for (int i=0; i<n_params; i++)
 		cout <<params[i] << " ";
@@ -136,85 +146,9 @@ void VavoulisSynapse::showParams()
 
 void VavoulisSynapse::print()
 {
-	cout << "Pos: ";
+	cout << "\tPos: ";
 	pos->print(); cout<< endl;
-	cout << "Pre: "; pre->print();  cout<< endl;
+	cout << "\tPre: "; pre->print();  cout<< endl;
 }
 
-
-
-// void VavoulisSynapse::update(VavoulisModel::integrators integr,double dt)
-// {
-// 	if(integr == VavoulisModel::EULER)
-// 	{
-// 		update_euler(dt);
-// 	}
-// 	else if(integr == VavoulisModel::RUNGE)
-// 	{
-
-// 		update_runge(dt);
-// 	}
-// }
-
-
-// void VavoulisSynapse::update_runge(double dt)
-// {
-// 	intey(dt);
-
-// }
-
-
-// void VavoulisSynapse::update_euler(double dt)
-// {
-// 	double aux_variables[n_variables];
-
-// 	aux_variables[s] = _variables[s] + dt*ds(_variables);
-// 	aux_variables[r] = _variables[r] + dt*dr(_variables);
-
-// 	std::copy(aux_variables,aux_variables+n_variables,_variables);
-
-// }
-
-
-
-// void VavoulisSynapse::funcion(double * variables, double * fvec)
-// {
-
-// 	fvec[s] = ds(); 
-// 	fvec[r] = dr();
-
-//    return;
-// }
-
-
-
-// void VavoulisSynapse::print_params()
-// {
-// 	for(int i=0; i < n_params; i++)
-// 	{
-// 		cout << params[i] << endl;
-// 	}
-// }
-
-
-// double VavoulisSynapse::dr(double * vars)
-// {
-// 	//Steady value: Vpre sigmoid function
-// 	// double r_inf = 1/(1 + exp((RUMBRAL - Vpre)/R_TAU));
-// 	double r_inf = 1/(1 + exp((-40 - pre->V())/2.5));
-// 	double r_value = (r_inf - vars[r])/params[activation_syn];
-// 	return r_value;
-// }
-
-
-// double VavoulisSynapse::ds(double * vars)
-// {
-// 	return (vars[r] - vars[s]) / params[activation_syn];
-// }
-
-
-// double VavoulisSynapse::Isyn()
-// {
-// 	return params[conduc_syn] * _variables[s] * (pos->V() - params[Esyn]);
-// }
 

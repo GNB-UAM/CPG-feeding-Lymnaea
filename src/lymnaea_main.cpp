@@ -1,15 +1,11 @@
-/*
+/*************************************************************
+	Developed by Alicia Garrido Peña (2020)
+
 	Implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x
 	and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020.
-	Please, if you use this implementation cite the two paper above in your work. 
-*/
-
-/*
-./lymnaea-va -connection 3 -file_name ./data/val -integrator -r -c_so 10 -c_n1m 6 -c_n2v 2 -c_n3t 0 -dt 0.001 -stim_dur 2 -stim_inc 5 -MIN_c 0 -MAX_c 10 -secs_dur 4
-
-make vavocplus connection=3 file_name=prueba_time integration=-r dt=0.0006 c_so=10 c_n1m=6 c_n2v=2 c_n3t=0 stim_dur=4.6 stim_inc=0.5 MIN_c=0 MAX_c=10 iters=9.2
-
-*/
+	
+	Please, if you use this implementation cite the two papers above in your work. 
+*************************************************************/
 
 
 #include <stdio.h>
@@ -20,53 +16,42 @@ make vavocplus connection=3 file_name=prueba_time integration=-r dt=0.0006 c_so=
 #include <vector>
 #include <iostream>
 
-// #include "vavoulis_neuron.h"
-// #include "ramp_generator.h"
-// #include "vavoulis_synapse.h"
 #include "cpg_simulator.h"
 
 using namespace std;
 
-#define n_variables 8
-
-#define DUR_BURST 2300 //mseconds	
-// #define MAX_VARS 18
-
-// #define N_NEU 4
-// #define N_VARS 6
-
-
-// #define SPIKE_TH -50.0
-// #define MIN_SPIKE_CHANGE 0.001
-
-
-
 #define MAX_STRING 20000
 
-// #define NUM_ARG 16
 #define ERROR 0
 #define OK 1
 
-enum prim_types{String,Integer, Float, Double, IntegrationMeth};
-string arg_names[]={"-connection","-file_name","-integrator","-dt","-c_so","-c_n1m","-c_n2v","-c_n3t","-stim_dur","-stim_inc","-MIN_c","-MAX_c","-secs_dur","-rounds","-feed_ini","-feed_end"};
-string format = "Format: ./lymn -connection val -file_name val -integration_method -dt val val -c_so val -c_n1m val -c_n2v val -c_n3t val -stim_dur val -stim_inc val -MIN_c val -MAX_c val [-secs_dur val] -rounds val -feed_ini val -feed_end val\n";
-prim_types arg_types[]={Integer,String,IntegrationMeth,Double,Double,Double,Double,Double,Double,Double,Double,Double,Double,Integer,Double,Double};
+enum prim_types{String,Integer, Float, Double, IntegrationMeth};//<Data types for parsing function
 
-string headers[] = {"t SO N1M N2v N3t c", "t N1M N2v IsynN1M IsynN2v","t N1M N2v N3t","t SO N1M N2v N3t c","t SO IsynSO N1M IsynN1M N2v IsynN2v N3t IsynN3t",
-			"t SO N1M N2v N3t", "t SO N1M N2v N3t c"};
+string arg_names[]={"-connection","-file_name","-integrator","-dt","-c_so","-c_n1m","-c_n2v","-c_n3t","-stim_dur","-stim_inc","-MIN_c","-MAX_c","-secs_dur","-rounds","-satiated_ini","-satiated_end"};//<Arguments possible names
+prim_types arg_types[]={Integer,String,IntegrationMeth,Double,Double,Double,Double,Double,Double,Double,Double,Double,Double,Integer,Double,Double}; //Arguments corresponding types
 
-//TODO: methods in new class?
-string methods[] = {"Euler","Runge-Kutta"}; 
+string format = "Format: ./lymn -connection val -file_name val -integration_method -dt val val -c_so val -c_n1m val -c_n2v val -c_n3t val -stim_dur val -stim_inc val -MIN_c val -MAX_c val [-secs_dur val] -rounds val -satiated_ini val -satiated_end val\n";//<Input format
 
 
+string methods[] = {"Euler","Runge-Kutta"}; //<Integrator names in String
+string headers[] = {"t SO N1M N2v N3t c", "t N1M N2v","t N1M N2v N3t","t SO N1M N2v N3t c","t SO IsynSO N1M IsynN1M N2v IsynN2v N3t IsynN3t",
+		"t SO N1M N2v N3t"};//<File headers depending on the connection. 
+
+/*!
+* @brief Parse input arguments defined by its types above in arg_names and arg_types. 
+*
+*/
 int parse_input(int argc,char *argv[], void ** arguments);
+/*!
+* Prompt help with parameters description
+*/
 void show_help();
 
 int main(int argc, char * argv[])
 {
 
 	int connection =3;
-	char * file_name = "./data/complete.asc";
+	char * file_name;
 	char file_spikes[MAX_STRING];
 	char file_ext[MAX_STRING];
 	double secs_dur = -1;
@@ -76,8 +61,8 @@ int main(int argc, char * argv[])
 	double c_so=-1,c_n1m=-1,c_n2v=-1,c_n3t=-1;
 	double stim_dur=-1;
 	double stim_inc=-1,MIN_c=-1,MAX_c=-1;
-	double feed_ini =  -1;
-	double feed_end =  -1;
+	double satiated_ini =  -1;
+	double satiated_end =  -1;
 
 	int rounds=4;
 
@@ -102,9 +87,18 @@ int main(int argc, char * argv[])
 	}
 	else
 	{
-		void * arguments[] = {&connection,&file_name,&integration,&dt,&c_so,&c_n1m,&c_n2v,&c_n3t,&stim_dur,&stim_inc,&MIN_c,&MAX_c,&secs_dur,&rounds,&feed_ini,&feed_end};
-		if(parse_input(argc,argv,arguments)==ERROR)return -1;
-		// cout <<format<< endl;
+		void * arguments[] = {&connection,&file_name,&integration,&dt,&c_so,&c_n1m,&c_n2v,&c_n3t,&stim_dur,&stim_inc,&MIN_c,&MAX_c,&secs_dur,&rounds,&satiated_ini,&satiated_end};
+		if(parse_input(argc,argv,arguments)==ERROR)
+		{
+			cerr << "Error parsing input"<< endl;
+			return -1;
+		}
+		if(!file_name)
+		{
+			cerr<< "No file name specified"<<endl;
+			return -1;
+
+		}
 	}
 
 	
@@ -113,21 +107,37 @@ int main(int argc, char * argv[])
 	//   Open file
 	////////////////////////////////////////////////////////
 
-	//Add currents
-	sprintf(file_ext,"%s_%.4f_%.2f_%.2f_%.2f_%.2f_%.2f_%.2f_%.2f_%.2f.asc",
-		methods[integration].c_str(),dt,c_so,c_n1m,c_n2v,c_n3t,
+	//Add Iinj values
+	sprintf(file_ext,"%s_%.4f_%.2f_%.2f_%.2f_%.2f",
+		methods[integration].c_str(),dt,c_so,c_n1m,c_n2v,c_n3t);
+
+	//Add ramp values (if used)
+	if(stim_dur!=-1 && stim_inc!=-1 && MIN_c!=-1 &&MAX_c!=-1)
+	{
+		sprintf(file_ext,"%s_%.2f_%.2f_%.2f_%.2f",file_ext,
 		stim_dur,stim_inc,MIN_c,MAX_c);
-	
-	sprintf(file_spikes,"%s_spikes_%s",file_name,file_ext);
-	sprintf(file_name,"%s_%s",file_name,file_ext);
+	}
+	else if(secs_dur == -1)
+	{
+		cerr <<"Error: Ramp or secs_dur must be specified"<< endl;
+		return -1;
+	}
+	else
+		cout << "\nWarning: Ramp will be ignored\n"<< endl;
+
+	//Join file name with parameters extension in spikes and basis file. 
+	sprintf(file_spikes,"%s_spikes_%s.asc",file_name,file_ext);
+	sprintf(file_name,"%s_%s.asc",file_name,file_ext);
 
 
+	//Open streams.
 	f = fopen(file_name,"w");
 	f_spks = fopen(file_spikes,"w");
 
 	if(!f|!f_spks)
 	{
 		cerr << "Error: error openning files"<<endl;
+		return -1;
 	}
 
 
@@ -147,12 +157,12 @@ int main(int argc, char * argv[])
 	else //If duration is specified, use it for iters computation. 
 		iters = (secs_dur*1000 )/dt;
 
-	if(feed_ini >0 and feed_end >0){
+	if(satiated_ini >0 and satiated_end >0){
 
-		feed_ini= (feed_ini*1000)/dt;
-		feed_end= (feed_end*1000)/dt;
+		satiated_ini= (satiated_ini*1000)/dt;
+		satiated_end= (satiated_end*1000)/dt;
 	}
-	// cout << feed_ini << " " << feed_end<< endl;
+	// cout << satiated_ini << " " << satiated_end<< endl;
 
 
 	///////////////////////////////////////
@@ -160,7 +170,6 @@ int main(int argc, char * argv[])
 	///////////////////////////////////////
 
 
-	//Initialization of the Ramp Generator.
 	RampGenerator rg(MIN_c,MAX_c,stim_inc,stim_dur);
 
 	//Write File header 
@@ -168,21 +177,20 @@ int main(int argc, char * argv[])
 
 	fprintf(f, "%s\n",header );
 	fprintf(f_spks,"%f\n",SPIKE_TH);
-	fprintf(f_spks, "%s\n",header );
+	fprintf(f_spks, "%s\n",headers[0].c_str() );
 
-
-	CPGSimulator cpg;
 
 	std::vector<double> c_values({c_so,c_n1m,c_n2v,c_n3t});
 
-	cpg.init(connection,c_values);
+	CPGSimulator cpg(connection,c_values,rg);//< CPGSimulator object
 
-	cpg.print();
+	cpg.print(); //Prints neurons and synapses generated. 
 
 	///////////////////////////////////////
 	//Print parameters used. 
 	///////////////////////////////////////
 
+	printf("\nInput Parameters\n\n");
 	printf("dt: %f \n",dt);
 	printf("Ramp rounds: %d\n",rounds);
 	printf("Simulation duration in ms: %.3f \n",secs_dur);
@@ -198,17 +206,18 @@ int main(int argc, char * argv[])
 	printf("Min_c=%.2f Max_c=%.2f\n",MIN_c,MAX_c );
 	printf("stim_dur=%.2f",stim_dur);
 	printf(" stim_inc=%.2f",stim_inc);
+	printf("\nsatiated_ini=%.2f satiated_end=%.2f\n",satiated_ini,satiated_end );
 	cout << endl;
-
-
 
 
 	//Starting clock
 	clock_t begin = clock();
 
+	//Start simulation
 
-	cpg.simulate(f,f_spks,iters,dt,integration,feed_ini,feed_end,connection);
+	cpg.simulate(f,f_spks,iters,dt,integration,satiated_ini,satiated_end);
 	
+	//Finishing clock
 
 	clock_t end = clock();
 	double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
@@ -216,6 +225,7 @@ int main(int argc, char * argv[])
 
 	printf("\n\n\n");
 
+	//Closing files.
 	fclose(f_spks);
 	fclose(f);
 
@@ -332,25 +342,9 @@ void show_help()
 	cout << endl;
 	cout << "\t rounds: number of rounds in the ramp."<<endl;
 	cout << "\t\t one round is going from min to max."<<endl;
+	cout << "\t satiated_ini: Time instant when satiated simulation starts in seconds "<<endl;
+	cout << "\t satiated_end: Time instant when satiated simulation ends in seconds "<<endl;
 	cout << endl;
 
 }
 
-
-// int write_file(FILE * f,int connection)
-// {
-// 	if(connection == 0)
-// 		fprintf(f, "%f %f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V(),c);
-// 	else if(connection == 1)
-// 		// fprintf(f, "%f %f %f\n", t,n1m.V(),n2v.V());
-// 		fprintf(f, "%f %f %f %f %f\n", t,n1m.V(),n2v.V(),n1m_isyn,n2v_isyn);
-// 	else if(connection == 2)
-// 		fprintf(f, "%f %f %f %f\n", t,n1m.V(),n2v.V(),n3t.V());
-// 	else if(connection == 3)
-// 		fprintf(f, "%f %f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V(),c);
-// 	// else if(connection == 4)
-// 	// 	// fprintf(f, "%f %f %f %f %f %f %f %f %f %f\n", t,so.V(),so.publics[VavoulisModel::_isyn,n1m.V(),n1m.publics[VavoulisModel::_isyn,n2v.V(),n2v.publics[VavoulisModel::_isyn,n3t.V(),n3t.publics[VavoulisModel::_isyn,c);
-// 		// fprintf(f, "%f %f %f %f %f %f %f %f %f\n", t,so.V(),so_isyn,n1m.V(),n1m_isyn,n2v.V(),n2v_isyn,n3t.V(),n3t_isyn);
-// 	else
-// 		fprintf(f, "%f %f %f %f %f\n", t,so.V(),n1m.V(),n2v.V(),n3t.V());
-// }

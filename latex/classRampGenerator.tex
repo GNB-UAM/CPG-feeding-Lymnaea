@@ -1,0 +1,95 @@
+\hypertarget{classRampGenerator}{}\doxysection{Ramp\+Generator Class Reference}
+\label{classRampGenerator}\index{RampGenerator@{RampGenerator}}
+
+
+{\ttfamily \#include $<$ramp\+\_\+generator.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classRampGenerator_acbfeb64cdcc9c5e4196be03afeb40110}{Ramp\+Generator}} (double \mbox{\hyperlink{classRampGenerator_a4b0ddd858ddc259ab615e120ad7b6a53}{min}}, double \mbox{\hyperlink{classRampGenerator_a98ac234d9519e203570ae0a8d1d06e98}{max}}, double \mbox{\hyperlink{classRampGenerator_ac7d90d5523a64990bf73e0d5c8aaf0b1}{stim\+\_\+inc}}, double \mbox{\hyperlink{classRampGenerator_addd6daf6292e44f744befa7a36c7b05b}{stim\+\_\+dur}})
+\begin{DoxyCompactList}\small\item\em Creates a new ramp generator with all necessary values. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classRampGenerator_acb1159184e5dfae07028cc454288b2d4}{Ramp\+Generator}} ()
+\item 
+double \mbox{\hyperlink{classRampGenerator_a972ca56550a763b82392b3904c1a666e}{get\+\_\+ext}} (double def, double \+\_\+time)
+\begin{DoxyCompactList}\small\item\em Computes the corresponding value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classRampGenerator_a8f70a028216f74f2899773203a45ade5}\label{classRampGenerator_a8f70a028216f74f2899773203a45ade5}} 
+void \mbox{\hyperlink{classRampGenerator_a8f70a028216f74f2899773203a45ade5}{print}} ()
+\begin{DoxyCompactList}\small\item\em Prints Ramp Components. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classRampGenerator_a4b0ddd858ddc259ab615e120ad7b6a53}\label{classRampGenerator_a4b0ddd858ddc259ab615e120ad7b6a53}} 
+double \mbox{\hyperlink{classRampGenerator_a4b0ddd858ddc259ab615e120ad7b6a53}{min}}
+\begin{DoxyCompactList}\small\item\em Minimun value of the ramp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classRampGenerator_a98ac234d9519e203570ae0a8d1d06e98}\label{classRampGenerator_a98ac234d9519e203570ae0a8d1d06e98}} 
+double \mbox{\hyperlink{classRampGenerator_a98ac234d9519e203570ae0a8d1d06e98}{max}}
+\begin{DoxyCompactList}\small\item\em Maximum value of the ramp. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classRampGenerator_ac7d90d5523a64990bf73e0d5c8aaf0b1}\label{classRampGenerator_ac7d90d5523a64990bf73e0d5c8aaf0b1}} 
+double \mbox{\hyperlink{classRampGenerator_ac7d90d5523a64990bf73e0d5c8aaf0b1}{stim\+\_\+inc}}
+\begin{DoxyCompactList}\small\item\em Increment value of the injected current. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classRampGenerator_addd6daf6292e44f744befa7a36c7b05b}\label{classRampGenerator_addd6daf6292e44f744befa7a36c7b05b}} 
+double \mbox{\hyperlink{classRampGenerator_addd6daf6292e44f744befa7a36c7b05b}{stim\+\_\+dur}}
+\begin{DoxyCompactList}\small\item\em Duration of the same current value in the ramp. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} class Synapse as described in Vavoulis et al. Connect two neurons in a gradual synapse. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classRampGenerator_acbfeb64cdcc9c5e4196be03afeb40110}\label{classRampGenerator_acbfeb64cdcc9c5e4196be03afeb40110}} 
+\index{RampGenerator@{RampGenerator}!RampGenerator@{RampGenerator}}
+\index{RampGenerator@{RampGenerator}!RampGenerator@{RampGenerator}}
+\doxysubsubsection{\texorpdfstring{RampGenerator()}{RampGenerator()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Ramp\+Generator\+::\+Ramp\+Generator (\begin{DoxyParamCaption}\item[{double}]{min,  }\item[{double}]{max,  }\item[{double}]{stim\+\_\+inc,  }\item[{double}]{stim\+\_\+dur }\end{DoxyParamCaption})}
+
+
+
+Creates a new ramp generator with all necessary values. 
+
+\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} constructor 
+\begin{DoxyParams}{Parameters}
+{\em min} & Minimun value of the ramp \\
+\hline
+{\em max} & Maximum value of the ramp \\
+\hline
+{\em stim\+\_\+inc} & Increment value of the injected current \\
+\hline
+{\em stim\+\_\+dur} & Duration of the same current value in the ramp. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classRampGenerator_acb1159184e5dfae07028cc454288b2d4}\label{classRampGenerator_acb1159184e5dfae07028cc454288b2d4}} 
+\index{RampGenerator@{RampGenerator}!RampGenerator@{RampGenerator}}
+\index{RampGenerator@{RampGenerator}!RampGenerator@{RampGenerator}}
+\doxysubsubsection{\texorpdfstring{RampGenerator()}{RampGenerator()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Ramp\+Generator\+::\+Ramp\+Generator (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\hyperlink{classRampGenerator}{Ramp\+Generator}} empty constructor 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classRampGenerator_a972ca56550a763b82392b3904c1a666e}\label{classRampGenerator_a972ca56550a763b82392b3904c1a666e}} 
+\index{RampGenerator@{RampGenerator}!get\_ext@{get\_ext}}
+\index{get\_ext@{get\_ext}!RampGenerator@{RampGenerator}}
+\doxysubsubsection{\texorpdfstring{get\_ext()}{get\_ext()}}
+{\footnotesize\ttfamily double Ramp\+Generator\+::get\+\_\+ext (\begin{DoxyParamCaption}\item[{double}]{def,  }\item[{double}]{\+\_\+time }\end{DoxyParamCaption})}
+
+
+
+Computes the corresponding value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em def} & Default value for the current. \\
+\hline
+{\em \+\_\+time} & concrete time instant \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Corresponding current value in \+\_\+time instant. if def != -\/1, def value is returned. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/ramp\+\_\+generator.\+h\item 
+src/ramp\+\_\+generator.\+cpp\end{DoxyCompactItemize}

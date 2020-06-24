@@ -1,3 +1,13 @@
+/*************************************************************
+	Developed by Alicia Garrido Peña (2020)
+
+	Implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x
+	and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020.
+	
+	Please, if you use this implementation cite the two papers above in your work. 
+*************************************************************/
+
+
 #include "cpg_simulator.h"
 
 
@@ -7,14 +17,15 @@ using namespace std;
 CPGSimulator::CPGSimulator()
 {
 	n_neurons=0;
+	connection=-1;
 }
 
-CPGSimulator::CPGSimulator(int connection, std::vector<double> c_values)
+CPGSimulator::CPGSimulator(int connection, std::vector<double> c_values, RampGenerator rg)
 {
-	init(connection,c_values);
+	init(connection,c_values,rg);
 }
 
-int CPGSimulator::init(int connection, std::vector<double> c_values)
+int CPGSimulator::init(int connection, std::vector<double> c_values, RampGenerator rg)
 {
 
 
@@ -24,12 +35,13 @@ int CPGSimulator::init(int connection, std::vector<double> c_values)
 
 	if(connection < 0)return 0;
 
+	this->connection=connection;
+
 	VavoulisModel so(VavoulisModel::SO);
 	VavoulisModel n1m(VavoulisModel::N1M);
 	VavoulisModel n2v(VavoulisModel::N2v);
 	VavoulisModel n3t(VavoulisModel::N3t);
 
-	// std::vector<VavoulisModel *> neurons({&so,&n1m,&n2v,&n3t});
 	neurons.assign({so,n1m,n2v,n3t});
 	n_neurons=neurons.size();
 	syns.resize(n_neurons);
@@ -94,47 +106,53 @@ void CPGSimulator::print()
 	{
 		cout << "Neuron: ";
 		neurons[i].print();
-		cout << "\tSynapses: \n\t";
+		cout << "\nSynapses: \n\t";
 		cout << "Number of synapses: "<< syns[i].size()<< endl;
 		for(int j=0;j<(int)syns[i].size();j++)
 		{
+			cout<< "\tSynapse number: "<< j<<endl;
 			syns[i][j].print();
+			cout << endl;
 		}
 	}
 }
 
-void CPGSimulator::write(FILE *f,double t,double c,int connection)
+
+void CPGSimulator::write(FILE *f,double t,double c)
 {
-	fprintf(f, "%f",t );
-	for(int i=0;i<n_neurons; i++)
-	{
-		fprintf(f, " %f", neurons[i].V());
-		if(connection == 4)
-			fprintf(f, " %f", neurons[i].getIsyn());
-	}
-	if(connection==0 || connection==3)
-		fprintf(f, " %f\n", c);
+	if(connection == 0 || connection==3)
+		fprintf(f, "%f %f %f %f %f %f\n",
+		 t,neurons[VavoulisModel::SO].V(),neurons[VavoulisModel::N1M].V(),neurons[VavoulisModel::N2v].V(),neurons[VavoulisModel::N3t].V(),c);
+	else if(connection == 1)
+		fprintf(f, "%f %f %f\n", t,neurons[VavoulisModel::N1M].V(),neurons[VavoulisModel::N2v].V());
+	else if(connection == 2)
+		fprintf(f, "%f %f %f %f\n", t,neurons[VavoulisModel::N1M].V(),neurons[VavoulisModel::N2v].V(),neurons[VavoulisModel::N3t].V());
+	else if(connection == 4)
+		fprintf(f, "%f %f %f %f %f %f %f %f %f\n", 
+		t,neurons[VavoulisModel::SO].V(),neurons[VavoulisModel::SO].getIsyn(),neurons[VavoulisModel::N1M].V(),neurons[VavoulisModel::N1M].getIsyn(),neurons[VavoulisModel::N2v].V(),neurons[VavoulisModel::N2v].getIsyn(),neurons[VavoulisModel::N3t].V(),neurons[VavoulisModel::N3t].getIsyn());
 	else
-		fprintf(f, "\n");
+		fprintf(f, "%f %f %f %f %f\n", t,neurons[VavoulisModel::SO].V(),neurons[VavoulisModel::N1M].V(),neurons[VavoulisModel::N2v].V(),neurons[VavoulisModel::N3t].V());
+
 }
 
-void CPGSimulator::simulate(FILE * f,FILE * f_spks,double iters,double dt,integrators integration,double feed_ini,double feed_end,int connection)
+
+void CPGSimulator::simulate(FILE * f,FILE * f_spks,double iters,double dt,integrators integration,double satiated_ini,double satiated_end)
 {
 	
 	////////////////////////////////////////////////////////
 	//   Simulation Mode Parameters
 	////////////////////////////////////////////////////////
 
-	//Variable used to reduce output file dimension. 
-	int serie =0;
+	
+	int serie =0;//Variable used to reduce output file dimension. 
 	double t=0.0;
 	double c =0;
 
-	std::vector<double> prevs(n_neurons,1);
+	std::vector<double> prevs(n_neurons,1);//Auxiliar vector for spike detection
 
-	//"When feeding a high current is applied to N3t and low to N1M so it ceases its activity"
-	//it is suppresed in N3t to achieve tonic spiking
-	std::vector<double> c_values_feed({c_values[VavoulisModel::SO],0,c_values[VavoulisModel::N2v],25});
+	// "In satiated animals, N3t keeps the feeding network under its suppressive control." [1]
+	// To simulate satiated activity N3t is stimulated by the injected current, while N1M value is supressed.
+	std::vector<double> c_values_staited({c_values[VavoulisModel::SO],0,c_values[VavoulisModel::N2v],25});
 	std::vector<double> c_values_save;
 
 	for (int i=0; i < iters; i++)
@@ -143,39 +161,74 @@ void CPGSimulator::simulate(FILE * f,FILE * f_spks,double iters,double dt,integr
       serie = (serie + 1) % 4;
       if (serie == 3)
       {
-		write(f,t,c,connection);
+		write(f,t,c);
 
 	  }
 
-
-
 		//////////////////////////////////////////////////////////////
-		////////////////// SIMULATING FEEDING ////////////////////////
+		/////////////// SIMULATING SATIATED BEHAVIOUR ////////////////
 		//////////////////////////////////////////////////////////////
 
-		if(feed_ini==i)
+		if(satiated_ini==i)
 		{
 			c_values_save = c_values; //save current values
-			c_values = c_values_feed; //assign feeding current values
+			c_values = c_values_staited; //assign satiated current values
 		}
-		if(feed_end==i)
+		if(satiated_end==i)
 		{
 			c_values = c_values_save; //restore current values
 		}
 
+
+		///////////////////////////////////////////////////////////
+
+		//Integrate variables in the model. 
 		c = update_all(t,integration,dt);
 
+		//Detect spikes and write in spikes file.
   		detect_spikes(f_spks,prevs,t);
 
 		t += dt;
 
 		if(i==(int)iters/2)
-			cout << i << endl;
+			cout << "Half iterations" << endl;
 	}
 
 
 }
 
+
+void CPGSimulator::detect_spikes(FILE * f_spks, std::vector<double> &prevs, double t )
+{
+
+	bool fst_inrow = true;
+	string buff ="";
+	double dev;
+
+	for(int n=0; n<n_neurons; ++n)
+	{	
+		dev = neurons[n].getdV();
+		//0.001 less than that change in the derivative is not a spike
+		//NOTE: it might be necessary to adjust MIN_SPIKE_CHANGE for different spike shapes. 
+		if(prevs[n] >0 && dev <0 && (prevs[n]-dev)>MIN_SPIKE_CHANGE) //If it's a spike (from pos derivate to 0 derivate)
+		{
+			fst_inrow = false;
+
+			if(neurons[n].V() >SPIKE_TH)
+				buff += to_string(neurons[n].V()) +" ";
+		}
+		else
+				buff +=", ";
+
+		prevs[n]=dev;
+
+	}
+	if(!fst_inrow)
+	{
+			fprintf(f_spks,"%f %s\n",t,buff.c_str());
+	}
+		
+}
 
 
 
@@ -192,7 +245,7 @@ double CPGSimulator::update_all(double _time, integrators integr,double dt)
 	}
 
 
-	for (int i=0; i< (int) n_neurons; i++)
+	for (int i=0; i< n_neurons; i++)
 		if(c_values[i]==-1)
 			return rg.get_ext(c_values[i],_time);
 
@@ -202,6 +255,25 @@ double CPGSimulator::update_all(double _time, integrators integr,double dt)
 }
 
 
+void CPGSimulator::update_euler(double _time, double dt)
+{
+	double isyn =0;
+	double i_ext=0;
+
+	for(int i=0; i<n_neurons; i++)
+	{
+		isyn=0;
+		for(int j=0; j< (int)syns[i].size();j++)
+		{
+			isyn+=syns[i][j].Isyn();
+			syns[i][j].update_variables(dt,_time);
+		}
+		i_ext = rg.get_ext(c_values[i],_time);
+		neurons[i].update_variables( dt, _time, i_ext,isyn);
+	}
+
+}
+
 
 void CPGSimulator::update_runge(double _time, double dt)
 {
@@ -210,7 +282,7 @@ void CPGSimulator::update_runge(double _time, double dt)
 }
 
 
-void CPGSimulator::funcion(double _time,const std::vector<std::vector<double > > & v_variables, std::vector<std::vector<double > >  &v_fvec)
+void CPGSimulator::diffs(double _time,const std::vector<std::vector<double > > & v_variables, std::vector<std::vector<double > >  &v_fvec)
 {	
 
 	int n_vars=VavoulisModel::getNVars();
@@ -247,7 +319,7 @@ void CPGSimulator::funcion(double _time,const std::vector<std::vector<double > >
 			pre_index = syns[i][j].getPreType();
 			vpre = v_variables[pre_index][0];
 
-			syns[i][j].funcion_simple(_time, vars_syns, ret_syn, vpre);
+			syns[i][j].diffs_fun(_time, vars_syns, ret_syn, vpre);
 			//Add syn variables to return vector. 
 			v_fvec[i].insert(v_fvec[i].end(),ret_syn.begin(),ret_syn.end());
 		}
@@ -255,7 +327,7 @@ void CPGSimulator::funcion(double _time,const std::vector<std::vector<double > >
 		//Get update vector from the synapse. 
 		std::vector<double> vars_neu(v_variables[i].begin(),v_variables[i].begin()+n_vars);
 		i_ext = rg.get_ext(c_values[i],_time);
-		neurons[i].funcion_simple(_time, vars_neu,ret, i_ext,i_syn);
+		neurons[i].diffs_fun(_time, vars_neu,ret, i_ext,i_syn);
 
 		//Add neuron variables to return vector. 
 		v_fvec[i].insert(v_fvec[i].begin(),ret.begin(),ret.end());
@@ -298,7 +370,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 
 	}
 
-	funcion(_time, v_variables,v_retorno);
+	diffs(_time, v_variables,v_retorno);
 
 
 	for(i=0; i < n_neurons; ++i)
@@ -315,7 +387,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 
 
 
-	funcion(_time+inc_integracion/5, v_apoyo,v_retorno);
+	diffs(_time+inc_integracion/5, v_apoyo,v_retorno);
 
 	for(i=0; i < n_neurons; ++i)
 	{
@@ -326,7 +398,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 		} 
 	}
 
-	funcion(_time+inc_integracion*0.3, v_apoyo,v_retorno);
+	diffs(_time+inc_integracion*0.3, v_apoyo,v_retorno);
 
 	for(i=0; i < n_neurons; ++i)
 	{
@@ -337,7 +409,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 		}
 	}
 
-	funcion(_time+inc_integracion*0.6, v_apoyo,v_retorno);
+	diffs(_time+inc_integracion*0.6, v_apoyo,v_retorno);
 
 	for(i=0; i < n_neurons; ++i)
 	{
@@ -348,7 +420,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 	  	} 	
 	}
 
-	funcion(_time+inc_integracion*0.9, v_apoyo,v_retorno);
+	diffs(_time+inc_integracion*0.9, v_apoyo,v_retorno);
 	for(i=0; i < n_neurons; ++i)
 	{
 		for(j=0;j<n_total_variables[i];++j)
@@ -362,7 +434,7 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 		}
 	}
 
-	funcion(_time+inc_integracion, v_apoyo,v_retorno);
+	diffs(_time+inc_integracion, v_apoyo,v_retorno);
 
 	for(i=0; i < n_neurons; ++i)
 	{
@@ -407,56 +479,3 @@ double CPGSimulator::intey(double _time, double inc_integracion)
 }
 
 
-double CPGSimulator::update_euler(double _time, double dt)
-{
-	double isyn =0;
-	double i_ext=0;
-
-	for(int i=0; i<n_neurons; i++)
-	{
-		isyn=0;
-		for(int j=0; j< (int)syns[i].size();j++)
-		{
-			isyn+=syns[i][j].Isyn();
-			syns[i][j].update_variables(dt,_time);
-		}
-		i_ext = rg.get_ext(c_values[i],_time);
-		neurons[i].update_variables( dt, _time, i_ext,isyn);
-	}
-
-	return c_values[0];
-}
-
-
-
-void CPGSimulator::detect_spikes(FILE * f_spks, std::vector<double> &prevs, double t )
-{
-
-	bool fst_inrow = true;
-	string buff ="";
-	double dev;
-
-	for(int n=0; n<n_neurons; ++n)
-	{	
-		dev = neurons[n].getdV();
-		//0.001 less than that change in the derivative is not a spike
-		//NOTE: it might be necessary to adjust MIN_SPIKE_CHANGE for different spike shapes. 
-		if(prevs[n] >0 && dev <0 && (prevs[n]-dev)>MIN_SPIKE_CHANGE) //If it's a spike (from pos derivate to 0 derivate)
-		{
-			fst_inrow = false;
-
-			if(neurons[n].V() >SPIKE_TH)
-				buff += to_string(neurons[n].V()) +" ";
-		}
-		else
-				buff +=", ";
-
-		prevs[n]=dev;
-
-	}
-	if(!fst_inrow)
-	{
-			fprintf(f_spks,"%f %s\n",t,buff.c_str());
-	}
-		
-}

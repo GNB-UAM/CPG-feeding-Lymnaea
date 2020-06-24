@@ -1,0 +1,389 @@
+\hypertarget{classVavoulisSynapse}{}\doxysection{Vavoulis\+Synapse Class Reference}
+\label{classVavoulisSynapse}\index{VavoulisSynapse@{VavoulisSynapse}}
+
+
+{\ttfamily \#include $<$vavoulis\+\_\+synapse.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classVavoulisSynapse_ad04f4e49b89bc8896e4dedfaaff87e41}{Vavoulis\+Synapse}} (\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$n1, \mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$n2, double \+\_\+conduc\+\_\+syn, double \+\_\+activation\+\_\+syn, double \+\_\+\+Esyn)
+\begin{DoxyCompactList}\small\item\em Creates a new synapse model with all the corresponding params and variables initial values assigned. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classVavoulisSynapse_ab27fbcc208d5032b789a95ca0bc93d4e}{Vavoulis\+Synapse}} ()
+\begin{DoxyCompactList}\small\item\em Creates a new synapse model with all the corresponding params and variables initial values initialized to 0. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a22ce4a547da20b78b5e2668a4a1236f4}\label{classVavoulisSynapse_a22ce4a547da20b78b5e2668a4a1236f4}} 
+int \mbox{\hyperlink{classVavoulisSynapse_a22ce4a547da20b78b5e2668a4a1236f4}{get\+Pre\+Type}} ()
+\begin{DoxyCompactList}\small\item\em Presynaptic neuron type getter. \end{DoxyCompactList}\item 
+std\+::vector$<$ double $>$ \mbox{\hyperlink{classVavoulisSynapse_aca2c6afc070841e515be1ec3cf9fe9f9}{get\+Variables}} ()
+\begin{DoxyCompactList}\small\item\em variables array getter \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_ab32aeb5431a5bfda2fb6c1dd098faf1b}{set\+Synapse}} (\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$n1, \mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$n2, double \+\_\+conduc\+\_\+syn, double \+\_\+act\+\_\+syn, double \+\_\+\+Esyn)
+\begin{DoxyCompactList}\small\item\em Sets params values of the synapse. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_a213b515f13aba9e0addf82951b573d98}{set\+\_\+variables}} (const std\+::vector$<$ double $>$ \&v)
+\begin{DoxyCompactList}\small\item\em Updates the n\+\_\+variables in variables array with the data in v. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_a7b9564d8283d9c04a754898987f6a5ed}{diffs\+\_\+fun}} (double time, const std\+::vector$<$ double $>$ \&vars, std\+::vector$<$ double $>$ \&fvec, double vpre)
+\begin{DoxyCompactList}\small\item\em Returns an array with all values obtained by the differential equations. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_a2c633df81331553730a654014bba63a9}{diffs\+\_\+fun}} (double time, std\+::vector$<$ double $>$ \&fvec, double vpre)
+\begin{DoxyCompactList}\small\item\em Returns an array with all values obtained by the differential equations Overloads previous funcion\+\_\+simple using \+\_\+variables attribute as vars. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_a7243176f240269c104adf570f27a1f64}{update\+\_\+variables}} (double dt, double time, double vpre)
+\begin{DoxyCompactList}\small\item\em Integrates variables based on dt. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classVavoulisSynapse_ad3e847bd25157f44e2e1f21b804ef810}{update\+\_\+variables}} (double dt, double time)
+\begin{DoxyCompactList}\small\item\em Integrates variables based on dt calls update\+\_\+varibales using pre-\/$>$V() as vpre. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classVavoulisSynapse_a1d13859b7225a0341fb8bf450bbf9155}{Isyn}} (const vector$<$ double $>$ \&variables, double v)
+\begin{DoxyCompactList}\small\item\em Synaptic current resulted from Pos-\/ and presynaptic neuron. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classVavoulisSynapse_a846be6930e5efacfe808c8fdb98d7f6e}{Isyn}} ()
+\begin{DoxyCompactList}\small\item\em Overload of Isyn method\+: Calculates Isyn accessing pos-\/$>$V() \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classVavoulisSynapse_ace9a735489f84ef40807e2f977511123}{Isyn}} (double v)
+\begin{DoxyCompactList}\small\item\em Overload of Isyn method\+: Calculates Isyn using v as argument. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a65bdafcdda04be7d8f6b059b5f3a32d0}\label{classVavoulisSynapse_a65bdafcdda04be7d8f6b059b5f3a32d0}} 
+void \mbox{\hyperlink{classVavoulisSynapse_a65bdafcdda04be7d8f6b059b5f3a32d0}{print}} ()
+\begin{DoxyCompactList}\small\item\em Prints Synapse. Format\+: Pos\+: Neuron print Pre\+: Neuron print. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a00ba9c7a36c7afd3e35ea8bc1559beb5}\label{classVavoulisSynapse_a00ba9c7a36c7afd3e35ea8bc1559beb5}} 
+void \mbox{\hyperlink{classVavoulisSynapse_a00ba9c7a36c7afd3e35ea8bc1559beb5}{print\+\_\+params}} ()
+\begin{DoxyCompactList}\small\item\em Prints Synapse Parameters values in params. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a6e6dae8663ba51b0e92d5d833b694b6e}\label{classVavoulisSynapse_a6e6dae8663ba51b0e92d5d833b694b6e}} 
+static int \mbox{\hyperlink{classVavoulisSynapse_a6e6dae8663ba51b0e92d5d833b694b6e}{get\+N\+Vars}} ()
+\begin{DoxyCompactList}\small\item\em returns the number of variables. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{classVavoulisSynapse_a8ac8fc89fa27cd9326b473531e68e290}{vars\+\_\+names}} \{ {\bfseries s}, 
+{\bfseries r}, 
+{\bfseries n\+\_\+variables}
+ \}
+\item 
+enum \mbox{\hyperlink{classVavoulisSynapse_ac0ce86b4a903c9e861fe1266702518b9}{params}} \{ {\bfseries conduc\+\_\+syn}, 
+{\bfseries activation\+\_\+syn}, 
+{\bfseries Esyn}, 
+{\bfseries n\+\_\+params}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{classVavoulisSynapse_a1babd855f5538c39f8605b9c431dae1e}{dr}} (double \+\_\+vpre, double \+\_\+r)
+\begin{DoxyCompactList}\small\item\em differential equation corresponding to r steady state in the synaptic equation. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{classVavoulisSynapse_a87d695e8a23c84ea5cb655547fd806f2}{ds}} (double \+\_\+r, double \+\_\+s)
+\begin{DoxyCompactList}\small\item\em differential equation corresponding to s activation value in the synaptic equation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a0aa9e3a42e36b7b5535e1b532991c96a}\label{classVavoulisSynapse_a0aa9e3a42e36b7b5535e1b532991c96a}} 
+double \mbox{\hyperlink{classVavoulisSynapse_a0aa9e3a42e36b7b5535e1b532991c96a}{\+\_\+variables}} \mbox{[}n\+\_\+variables\mbox{]}
+\begin{DoxyCompactList}\small\item\em Variables array. All elements in this array have a differential equation associated in the form of dvar(...) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a5924b3057e898be381d180136de9aec9}\label{classVavoulisSynapse_a5924b3057e898be381d180136de9aec9}} 
+double \mbox{\hyperlink{classVavoulisSynapse_a5924b3057e898be381d180136de9aec9}{params}} \mbox{[}n\+\_\+params\mbox{]}
+\begin{DoxyCompactList}\small\item\em Parameter array. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a0974e169987f218a9d7dad4cc9a0746e}\label{classVavoulisSynapse_a0974e169987f218a9d7dad4cc9a0746e}} 
+int \mbox{\hyperlink{classVavoulisSynapse_a0974e169987f218a9d7dad4cc9a0746e}{pre\+\_\+type}}
+\begin{DoxyCompactList}\small\item\em Presynaptic neuron type. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_ad1b738ec60e6a4406f9a1f5847e64fec}\label{classVavoulisSynapse_ad1b738ec60e6a4406f9a1f5847e64fec}} 
+\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$ \mbox{\hyperlink{classVavoulisSynapse_ad1b738ec60e6a4406f9a1f5847e64fec}{pos}}
+\begin{DoxyCompactList}\small\item\em posynaptic neuron reference \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classVavoulisSynapse_a9b1a86cb07ed7635e97e70996a7d3078}\label{classVavoulisSynapse_a9b1a86cb07ed7635e97e70996a7d3078}} 
+\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$ \mbox{\hyperlink{classVavoulisSynapse_a9b1a86cb07ed7635e97e70996a7d3078}{pre}}
+\begin{DoxyCompactList}\small\item\em pre-\/synaptic neuron reference \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classVavoulisSynapse}{Vavoulis\+Synapse}} class Synapse as described in Vavoulis et al. Connect two neurons in a gradual synapse. 
+
+\doxysubsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classVavoulisSynapse_ac0ce86b4a903c9e861fe1266702518b9}\label{classVavoulisSynapse_ac0ce86b4a903c9e861fe1266702518b9}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!params@{params}}
+\index{params@{params}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{params}{params}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{classVavoulisSynapse_ac0ce86b4a903c9e861fe1266702518b9}{Vavoulis\+Synapse\+::params}}\hspace{0.3cm}{\ttfamily [private]}}
+
+Parameters names references for params array \mbox{\Hypertarget{classVavoulisSynapse_a8ac8fc89fa27cd9326b473531e68e290}\label{classVavoulisSynapse_a8ac8fc89fa27cd9326b473531e68e290}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!vars\_names@{vars\_names}}
+\index{vars\_names@{vars\_names}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{vars\_names}{vars\_names}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{classVavoulisSynapse_a8ac8fc89fa27cd9326b473531e68e290}{Vavoulis\+Synapse\+::vars\+\_\+names}}\hspace{0.3cm}{\ttfamily [private]}}
+
+Varibles names references for \+\_\+variables array 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classVavoulisSynapse_ad04f4e49b89bc8896e4dedfaaff87e41}\label{classVavoulisSynapse_ad04f4e49b89bc8896e4dedfaaff87e41}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!VavoulisSynapse@{VavoulisSynapse}}
+\index{VavoulisSynapse@{VavoulisSynapse}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{VavoulisSynapse()}{VavoulisSynapse()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Vavoulis\+Synapse\+::\+Vavoulis\+Synapse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$}]{n1,  }\item[{\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$}]{n2,  }\item[{double}]{\+\_\+conduc\+\_\+syn,  }\item[{double}]{\+\_\+activation\+\_\+syn,  }\item[{double}]{\+\_\+\+Esyn }\end{DoxyParamCaption})}
+
+
+
+Creates a new synapse model with all the corresponding params and variables initial values assigned. 
+
+\mbox{\hyperlink{classVavoulisSynapse}{Vavoulis\+Synapse}} constructor 
+\begin{DoxyParams}{Parameters}
+{\em n1} & Pointer to pos-\/synaptic neuron \\
+\hline
+{\em n2} & Pointer to pre-\/synaptic neuron \\
+\hline
+{\em \+\_\+conduc\+\_\+syn} & Maximal synaptic conductance parameter value \\
+\hline
+{\em \+\_\+activation\+\_\+syn} & Activation time constant parameter value \\
+\hline
+{\em \+\_\+\+Esyn} & reversal potential parameter value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classVavoulisSynapse_ab27fbcc208d5032b789a95ca0bc93d4e}\label{classVavoulisSynapse_ab27fbcc208d5032b789a95ca0bc93d4e}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!VavoulisSynapse@{VavoulisSynapse}}
+\index{VavoulisSynapse@{VavoulisSynapse}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{VavoulisSynapse()}{VavoulisSynapse()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Vavoulis\+Synapse\+::\+Vavoulis\+Synapse (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Creates a new synapse model with all the corresponding params and variables initial values initialized to 0. 
+
+\mbox{\hyperlink{classVavoulisSynapse}{Vavoulis\+Synapse}} void constructor 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classVavoulisSynapse_a7b9564d8283d9c04a754898987f6a5ed}\label{classVavoulisSynapse_a7b9564d8283d9c04a754898987f6a5ed}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!diffs\_fun@{diffs\_fun}}
+\index{diffs\_fun@{diffs\_fun}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{diffs\_fun()}{diffs\_fun()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::diffs\+\_\+fun (\begin{DoxyParamCaption}\item[{double}]{time,  }\item[{const std\+::vector$<$ double $>$ \&}]{vars,  }\item[{std\+::vector$<$ double $>$ \&}]{fvec,  }\item[{double}]{vpre }\end{DoxyParamCaption})}
+
+
+
+Returns an array with all values obtained by the differential equations. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em time} & Current time for the differential equation. \\
+\hline
+{\em vars} & vector with previous instant variables values. \\
+\hline
+{\em fvec} & return vector with computed differential values. \\
+\hline
+{\em vpre} & Voltage value in the somatic compartment from the Presynaptic neuron. \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_a2c633df81331553730a654014bba63a9}\label{classVavoulisSynapse_a2c633df81331553730a654014bba63a9}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!diffs\_fun@{diffs\_fun}}
+\index{diffs\_fun@{diffs\_fun}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{diffs\_fun()}{diffs\_fun()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::diffs\+\_\+fun (\begin{DoxyParamCaption}\item[{double}]{time,  }\item[{std\+::vector$<$ double $>$ \&}]{fvec,  }\item[{double}]{vpre }\end{DoxyParamCaption})}
+
+
+
+Returns an array with all values obtained by the differential equations Overloads previous funcion\+\_\+simple using \+\_\+variables attribute as vars. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em time} & Current time for the differential equation. \\
+\hline
+{\em fvec} & return vector with computed differential values. \\
+\hline
+{\em vpre} & Voltage value in the somatic compartment from the Presynaptic neuron. \\
+\hline
+\end{DoxyParams}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_a1babd855f5538c39f8605b9c431dae1e}\label{classVavoulisSynapse_a1babd855f5538c39f8605b9c431dae1e}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!dr@{dr}}
+\index{dr@{dr}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{dr()}{dr()}}
+{\footnotesize\ttfamily double Vavoulis\+Synapse\+::dr (\begin{DoxyParamCaption}\item[{double}]{\+\_\+vpre,  }\item[{double}]{\+\_\+r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+differential equation corresponding to r steady state in the synaptic equation. 
+
+r differential equation 
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+vpre} & Voltage value in the somatic compartment from the Presynaptic neuron. \\
+\hline
+{\em \+\_\+r} & previous r value. (usually \+\_\+variables\mbox{[}r\mbox{]}) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result for the equation for the corresponding neuron. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_a87d695e8a23c84ea5cb655547fd806f2}\label{classVavoulisSynapse_a87d695e8a23c84ea5cb655547fd806f2}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!ds@{ds}}
+\index{ds@{ds}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{ds()}{ds()}}
+{\footnotesize\ttfamily double Vavoulis\+Synapse\+::ds (\begin{DoxyParamCaption}\item[{double}]{\+\_\+r,  }\item[{double}]{\+\_\+s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+differential equation corresponding to s activation value in the synaptic equation. 
+
+s differential equation 
+\begin{DoxyParams}{Parameters}
+{\em \+\_\+r} & value of r. (usually \+\_\+variables\mbox{[}r\mbox{]}) \\
+\hline
+{\em \+\_\+s} & previous s value. (usually \+\_\+variables\mbox{[}s\mbox{]}) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result for the equation for the corresponding neuron. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_aca2c6afc070841e515be1ec3cf9fe9f9}\label{classVavoulisSynapse_aca2c6afc070841e515be1ec3cf9fe9f9}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!getVariables@{getVariables}}
+\index{getVariables@{getVariables}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{getVariables()}{getVariables()}}
+{\footnotesize\ttfamily std\+::vector$<$ double $>$ Vavoulis\+Synapse\+::get\+Variables (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+variables array getter 
+
+\begin{DoxyReturn}{Returns}
+A copy of variables array as a std vector. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classVavoulisSynapse_a846be6930e5efacfe808c8fdb98d7f6e}\label{classVavoulisSynapse_a846be6930e5efacfe808c8fdb98d7f6e}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!Isyn@{Isyn}}
+\index{Isyn@{Isyn}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{Isyn()}{Isyn()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily double Vavoulis\+Synapse\+::\+Isyn (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Overload of Isyn method\+: Calculates Isyn accessing pos-\/$>$V() 
+
+\begin{DoxyReturn}{Returns}
+resulting synaptic value in mV 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classVavoulisSynapse_a1d13859b7225a0341fb8bf450bbf9155}\label{classVavoulisSynapse_a1d13859b7225a0341fb8bf450bbf9155}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!Isyn@{Isyn}}
+\index{Isyn@{Isyn}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{Isyn()}{Isyn()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily double Vavoulis\+Synapse\+::\+Isyn (\begin{DoxyParamCaption}\item[{const vector$<$ double $>$ \&}]{variables,  }\item[{double}]{v }\end{DoxyParamCaption})}
+
+
+
+Synaptic current resulted from Pos-\/ and presynaptic neuron. 
+
+Synaptic current value 
+\begin{DoxyParams}{Parameters}
+{\em variables} & vector used to compute Isyn. \\
+\hline
+{\em v} & Soma voltage value from pos-\/synaptic neuron. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+resulting synaptic value in mV. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_ace9a735489f84ef40807e2f977511123}\label{classVavoulisSynapse_ace9a735489f84ef40807e2f977511123}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!Isyn@{Isyn}}
+\index{Isyn@{Isyn}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{Isyn()}{Isyn()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily double Vavoulis\+Synapse\+::\+Isyn (\begin{DoxyParamCaption}\item[{double}]{v }\end{DoxyParamCaption})}
+
+
+
+Overload of Isyn method\+: Calculates Isyn using v as argument. 
+
+Synaptic current value 
+\begin{DoxyParams}{Parameters}
+{\em v} & Soma voltage value from pos-\/synaptic neuron. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+resulting synaptic value in mV. 
+\end{DoxyReturn}
+\begin{DoxySeeAlso}{See also}
+Vavoulis et al. 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classVavoulisSynapse_a213b515f13aba9e0addf82951b573d98}\label{classVavoulisSynapse_a213b515f13aba9e0addf82951b573d98}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!set\_variables@{set\_variables}}
+\index{set\_variables@{set\_variables}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{set\_variables()}{set\_variables()}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::set\+\_\+variables (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{v }\end{DoxyParamCaption})}
+
+
+
+Updates the n\+\_\+variables in variables array with the data in v. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & vector containing new variables values. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result for the equation for the corresponding neuron. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classVavoulisSynapse_ab32aeb5431a5bfda2fb6c1dd098faf1b}\label{classVavoulisSynapse_ab32aeb5431a5bfda2fb6c1dd098faf1b}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!setSynapse@{setSynapse}}
+\index{setSynapse@{setSynapse}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{setSynapse()}{setSynapse()}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::set\+Synapse (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$}]{n1,  }\item[{\mbox{\hyperlink{classVavoulisModel}{Vavoulis\+Model}} $\ast$}]{n2,  }\item[{double}]{\+\_\+conduc\+\_\+syn,  }\item[{double}]{\+\_\+act\+\_\+syn,  }\item[{double}]{\+\_\+\+Esyn }\end{DoxyParamCaption})}
+
+
+
+Sets params values of the synapse. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n1} & Pointer to pos-\/synaptic neuron \\
+\hline
+{\em n2} & Pointer to pre-\/synaptic neuron \\
+\hline
+{\em \+\_\+conduc\+\_\+syn} & Maximal synaptic conductance parameter value \\
+\hline
+{\em \+\_\+act\+\_\+syn} & Activation time constant parameter value \\
+\hline
+{\em \+\_\+\+Esyn} & reversal potential parameter value \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classVavoulisSynapse_ad3e847bd25157f44e2e1f21b804ef810}\label{classVavoulisSynapse_ad3e847bd25157f44e2e1f21b804ef810}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!update\_variables@{update\_variables}}
+\index{update\_variables@{update\_variables}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{update\_variables()}{update\_variables()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::update\+\_\+variables (\begin{DoxyParamCaption}\item[{double}]{dt,  }\item[{double}]{time }\end{DoxyParamCaption})}
+
+
+
+Integrates variables based on dt calls update\+\_\+varibales using pre-\/$>$V() as vpre. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dt} & Integration time step \\
+\hline
+{\em time} & Current time for the differential equation. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classVavoulisSynapse_a7243176f240269c104adf570f27a1f64}\label{classVavoulisSynapse_a7243176f240269c104adf570f27a1f64}} 
+\index{VavoulisSynapse@{VavoulisSynapse}!update\_variables@{update\_variables}}
+\index{update\_variables@{update\_variables}!VavoulisSynapse@{VavoulisSynapse}}
+\doxysubsubsection{\texorpdfstring{update\_variables()}{update\_variables()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Vavoulis\+Synapse\+::update\+\_\+variables (\begin{DoxyParamCaption}\item[{double}]{dt,  }\item[{double}]{time,  }\item[{double}]{vpre }\end{DoxyParamCaption})}
+
+
+
+Integrates variables based on dt. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dt} & Integration time step \\
+\hline
+{\em time} & Current time for the differential equation. \\
+\hline
+{\em vpre} & Soma voltage value from pre-\/synaptic neuron. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/vavoulis\+\_\+synapse.\+h\item 
+src/vavoulis\+\_\+synapse.\+cpp\end{DoxyCompactItemize}

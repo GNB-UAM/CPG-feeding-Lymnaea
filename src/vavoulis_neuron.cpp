@@ -1,3 +1,12 @@
+/*************************************************************
+	Developed by Alicia Garrido Peña (2020)
+
+	Implementation of the Lymnaea feeding CPG originally proposed by Vavoulis et al. (2007). Dynamic control of a central pattern generator circuit: A computational model of the snail feeding network. European Journal of Neuroscience, 25(9), 2805–2818. https://doi.org/10.1111/j.1460-9568.2007.05517.x
+	and used in study of dynamical invaraiants in Alicia Garrido-Peña, Irene Elices and Pablo Varona (2020). Characterization of interval variability in the sequential activity of a central pattern generator model. Neurocomputing 2020.
+	
+	Please, if you use this implementation cite the two papers above in your work. 
+*************************************************************/
+
 
 #include "vavoulis_neuron.h"
 
@@ -198,7 +207,7 @@ double VavoulisModel::dva(double _v,double _va,double _h,double _n)
 }
 
 
-void VavoulisModel::funcion_simple(double _time, vector<double> &vars, vector<double> &fvec, double iext,double i_syn)
+void VavoulisModel::diffs_fun(double _time, vector<double> &vars, vector<double> &fvec, double iext,double i_syn)
 {	
 	this->isyn=i_syn;
 
@@ -244,7 +253,7 @@ void VavoulisModel::update_variables(double dt, double time, double iext,double 
 	std::vector<double>  fvec(n_variables);
 	std::vector<double> vars(_variables,_variables+n_variables);
 
-	funcion_simple(time,vars,fvec,iext, i_syn);
+	diffs_fun(time,vars,fvec,iext, i_syn);
 
 	for (int i = 0; i < n_variables; ++i)
 	{
