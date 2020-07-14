@@ -138,7 +138,7 @@ Warning:
 This plotting tool might have difficulties plotting large files, you can use other plotting tools such as gnunplot.
 
 ### Developed by ###
-Alicia Garrido Peña, PhD in Universidad Autónoma de Madrid. Grupo de Neurocomputación biológica (GNB)
+Alicia Garrido Peña, PhD student at Universidad Autónoma de Madrid. Grupo de Neurocomputación biológica (GNB)
 
 http://www.ii.uam.es/~gnb/
 
