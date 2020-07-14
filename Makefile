@@ -6,7 +6,7 @@ LDIR=-L$(LIBDIR)
 IDIR=-I$(LIBDIR)
 CFLAGS=-Wall
 COPT=-O2
-CC=g++
+CC=g++ -std=c++11
 
 all: simulation
 
