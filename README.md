@@ -25,7 +25,7 @@ the documentation for this implementation will be generated in html and latex fo
 ### Build 
 If it is the first time you use this model first run:
 	
-	make init
+	make config
 
 This will create data and images directories. 
 
